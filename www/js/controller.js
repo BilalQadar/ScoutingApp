@@ -37,7 +37,7 @@ angular.module('starter.controllers', [])
 
 }])
 
-.controller('TeleopCtrl', ['$scope', '$state', '$ionicPopup', '$rootScope', function($scope, $state, $ionicPopup, $rootScope) {
+.controller('TeleopCtrl', ['$scope', '$state', '$ionicPopup', '$rootScope', '$http', function($scope, $state, $ionicPopup, $rootScope, $http) {
 
   $scope.stacks = [];
 
@@ -59,7 +59,7 @@ angular.module('starter.controllers', [])
      confirmPopup.then(function(res) {
        if(res) {
 
-         /*$http.post('http://scoutingserver.herokuapp.com/api/matches/', {quadrant: $scope.match.quadrant, number: $scope.match.number, scouter: $scope.match.scouter, teleop: JSON.stringify($scope.stacks)})
+         $http.post('http://scoutingserver.herokuapp.com/api/matches/', {quadrant: $rootScope.match.quadrant, number: $rootScope.match.number, scouter: $rootScope.match.scouter, team: $rootScope.match.team, teleop: JSON.stringify($scope.stacks), auto: JSON.stringify($rootScope.auto), notes: $rootScope.match.notes})
              .success(function(data) {
                  console.log(data);
              })
@@ -67,7 +67,7 @@ angular.module('starter.controllers', [])
                  console.log('Error: ' + data);
              }
          );
-*/
+
          $scope.stacks = [];
          $scope.match.number = $scope.match.number + 1;
          $scope.match.team = null;
