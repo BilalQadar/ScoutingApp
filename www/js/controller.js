@@ -48,7 +48,7 @@ angular.module('starter.controllers', [])
   }
 
   $scope.newStack = function() {
-    $scope.stacks.push({size: 1, noodle: false, bin: false});
+    $scope.stacks.push({size: 1, noodle: false, bin: false, rainbow: false});
   }
 
   $scope.upload = function() {
