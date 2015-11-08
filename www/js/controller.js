@@ -39,16 +39,16 @@ angular.module('starter.controllers', [])
 
 .controller('TeleopCtrl', ['$scope', '$state', '$ionicPopup', '$rootScope', '$http', function($scope, $state, $ionicPopup, $rootScope, $http) {
 
-  $scope.stacks = [];
+  $rootScope.stacks = [];
 
-  $scope.stacks.push({size: 1, noodle: false, bin: false});
+  $rootScope.stacks.push({size: 1, noodle: false, bin: false, rainbow: false});
 
   $scope.deleteStack = function(index) {
-    $scope.stacks.splice(index, 1);
+    $rootScope.stacks.splice(index, 1);
   }
 
   $scope.newStack = function() {
-    $scope.stacks.push({size: 1, noodle: false, bin: false, rainbow: false});
+    $rootScope.stacks.push({size: 1, noodle: false, bin: false, rainbow: false});
   }
 
   $scope.upload = function() {
@@ -59,20 +59,7 @@ angular.module('starter.controllers', [])
      confirmPopup.then(function(res) {
        if(res) {
 
-         $http.post('http://scoutingserver.herokuapp.com/api/matches/', {quadrant: $rootScope.match.quadrant, number: $rootScope.match.number, scouter: $rootScope.match.scouter, team: $rootScope.match.team, teleop: JSON.stringify($scope.stacks), auto: JSON.stringify($rootScope.auto), notes: $rootScope.match.notes})
-             .success(function(data) {
-                 console.log(data);
-             })
-             .error(function(data) {
-                 console.log('Error: ' + data);
-             }
-         );
-
-         $scope.stacks = [];
-         $scope.match.number = $scope.match.number + 1;
-         $scope.match.team = null;
-         $rootScope.uploaded = "Previous match was recoreded. Thank you!";
-         $state.go('newmatch');
+         $state.go('upload');
 
          console.log('You are sure');
        } else {
@@ -83,13 +70,40 @@ angular.module('starter.controllers', [])
 
 }])
 
-.controller('AutoCtrl', ['$scope', '$state', '$rootScope', '$ionicPopup', function($scope, $state, $rootScope, $ionicPopup) {
+.controller('AutoCtrl', ['$scope', '$state', '$rootScope', '$ionicPopup', '$timeout', function($scope, $state, $rootScope, $ionicPopup, $timeout) {
 
   $scope.teleop = function() {
     $state.go('teleop');
   }
 
   $rootScope.auto = {speed: 0, stackSize: 0, bins: 0};
+
+  $scope.toggle = "Start";
+
+  var timeout = null;
+
+  $scope.reset = function() {
+    $rootScope.auto.speed = 0;
+    $timeout.cancel(timeout);
+  }
+
+  $scope.onTimeout = function() {
+       $rootScope.auto.speed++;
+       timeout = $timeout($scope.onTimeout, 1);
+   };
+
+  $scope.startTimer = function() {
+
+    if ($scope.toggle == "Stop") {
+      $scope.toggle = "Start";
+      $timeout.cancel(timeout);
+    }
+    else if ($scope.toggle == "Start") {
+      timeout = $timeout($scope.onTimeout, 1);
+      $scope.toggle = "Stop";
+    }
+
+  };
 
 }])
 
@@ -98,6 +112,57 @@ angular.module('starter.controllers', [])
 }])
 
 .controller('SearchCtrl', ['$scope', '$state', '$rootScope', function($scope, $state, $rootScope) {
+
+}])
+
+.controller('UploadCtrl', ['$scope', '$state', '$rootScope', '$http', '$window', function($scope, $state, $rootScope, $http, $window) {
+
+  $scope.save = function() {
+
+    $scope.savedMatches = JSON.parse($window.localStorage['matches'] || '{}');
+    $scope.savedAutos = JSON.parse($window.localStorage['autos'] || '{}');
+    $scope.savedStacks = JSON.parse($window.localStorage['stacks'] || '{}');
+
+    $window.localStorage['matches'] = JSON.stringify($scope.savedMatches.push($rootScope.match));
+    $window.localStorage['autos'] = JSON.stringify($scope.savedAutos.push($rootScope.auto));
+
+    $rootScope.stacks = [];
+    $rootScope.stacks.push({size: 1, noodle: false, bin: false, rainbow: false});
+    $rootScope.match.number = $rootScope.match.number + 1;
+    $rootScope.match.team = null;
+    $rootScope.uploaded = "Previous match was recoreded. Thank you!";
+    $state.go('newmatch');
+
+  };
+
+  $scope.upload = function() {
+
+    $http.post('http://scoutingserver.herokuapp.com/api/matches/', {quadrant: $scope.savedMatches[i].quadrant, number: $scope.savedMatches[i].number, scouter: $scope.savedMatches[i].scouter, team: $scope.savedMatches[i].team, teleop: JSON.stringify($scope.savedStacks[i]), auto: JSON.stringify($scope.savedAutos[i]), notes: $scope.savedMatches[i].notes})
+          .success(function(data) {
+              console.log(data);
+          })
+          .error(function(data) {
+              console.log('Error: ' + data);
+          }
+    );
+
+    $http.post('http://scoutingserver.herokuapp.com/api/matches/', {quadrant: $rootScope.match.quadrant, number: $rootScope.match.number, scouter: $rootScope.match.scouter, team: $rootScope.match.team, teleop: JSON.stringify($rootScope.stacks), auto: JSON.stringify($rootScope.auto), notes: $rootScope.match.notes})
+        .success(function(data) {
+            console.log(data);
+        })
+        .error(function(data) {
+            console.log('Error: ' + data);
+        }
+    );
+
+    $rootScope.stacks = [];
+    $rootScope.stacks.push({size: 1, noodle: false, bin: false, rainbow: false});
+    $rootScope.match.number = $rootScope.match.number + 1;
+    $rootScope.match.team = null;
+    $rootScope.uploaded = "Previous match was uploaded. Thank you!";
+    $state.go('newmatch');
+
+  };
 
 }])
 

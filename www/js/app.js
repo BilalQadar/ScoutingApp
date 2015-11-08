@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('starter', ['ionic','starter.controllers', 'firebase'])
 
-.run(function($ionicPlatform, $rootScope) {
+.run(function($ionicPlatform, $rootScope, $window) {
   $ionicPlatform.ready(function($scope, $rootScope) {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
@@ -19,6 +19,9 @@ angular.module('starter', ['ionic','starter.controllers', 'firebase'])
   });
 
   $rootScope.uploaded = "";
+
+  $window.localStorage['matches'] = JSON.stringify([]);
+  $window.localStorage['autos'] = JSON.stringify([]);
 
 })
 
@@ -60,7 +63,12 @@ angular.module('starter', ['ionic','starter.controllers', 'firebase'])
                             controller: 'TeleopCtrl'
                         })
 
-
+                       $stateProvider
+                            .state('upload', {
+                                url: '/upload',
+                                templateUrl: 'templates/upload.html',
+                                controller: 'UploadCtrl'
+                            })
 
     // defaults URL/state to the splash screen (first screen)
 
