@@ -89,7 +89,7 @@ angular.module('starter.controllers', [])
 
   $scope.onTimeout = function() {
        $rootScope.auto.speed++;
-       timeout = $timeout($scope.onTimeout, 1);
+       timeout = $timeout($scope.onTimeout, 8.8);
    };
 
   $scope.startTimer = function() {
@@ -99,7 +99,7 @@ angular.module('starter.controllers', [])
       $timeout.cancel(timeout);
     }
     else if ($scope.toggle == "Start") {
-      timeout = $timeout($scope.onTimeout, 1);
+      timeout = $timeout($scope.onTimeout, 8.8);
       $scope.toggle = "Stop";
     }
 
@@ -117,14 +117,15 @@ angular.module('starter.controllers', [])
 
 .controller('UploadCtrl', ['$scope', '$state', '$rootScope', '$http', '$window', function($scope, $state, $rootScope, $http, $window) {
 
-  $scope.save = function() {
+  $scope.savedMatches = JSON.parse($window.localStorage['matches'] || '{}');
+  $scope.savedAutos = JSON.parse($window.localStorage['autos'] || '{}');
+  $scope.savedStacks = JSON.parse($window.localStorage['stacks'] || '{}');
 
-    $scope.savedMatches = JSON.parse($window.localStorage['matches'] || '{}');
-    $scope.savedAutos = JSON.parse($window.localStorage['autos'] || '{}');
-    $scope.savedStacks = JSON.parse($window.localStorage['stacks'] || '{}');
+  $scope.save = function() {
 
     $window.localStorage['matches'] = JSON.stringify($scope.savedMatches.push($rootScope.match));
     $window.localStorage['autos'] = JSON.stringify($scope.savedAutos.push($rootScope.auto));
+    $window.localStorage['stacks'] = JSON.stringify($scope.savedAutos.push($rootScope.stacks));
 
     $rootScope.stacks = [];
     $rootScope.stacks.push({size: 1, noodle: false, bin: false, rainbow: false});
@@ -137,16 +138,7 @@ angular.module('starter.controllers', [])
 
   $scope.upload = function() {
 
-    $http.post('http://scoutingserver.herokuapp.com/api/matches/', {quadrant: $scope.savedMatches[i].quadrant, number: $scope.savedMatches[i].number, scouter: $scope.savedMatches[i].scouter, team: $scope.savedMatches[i].team, teleop: JSON.stringify($scope.savedStacks[i]), auto: JSON.stringify($scope.savedAutos[i]), notes: $scope.savedMatches[i].notes})
-          .success(function(data) {
-              console.log(data);
-          })
-          .error(function(data) {
-              console.log('Error: ' + data);
-          }
-    );
-
-    $http.post('http://scoutingserver.herokuapp.com/api/matches/', {quadrant: $rootScope.match.quadrant, number: $rootScope.match.number, scouter: $rootScope.match.scouter, team: $rootScope.match.team, teleop: JSON.stringify($rootScope.stacks), auto: JSON.stringify($rootScope.auto), notes: $rootScope.match.notes})
+    $http.post('http://scoutingserver.herokuapp.com/api/matches/', {humanplayer: $rootScope.match.humanplayer, landfill: $rootScope.match.landfill, quadrant: $rootScope.match.quadrant, number: $rootScope.match.number, scouter: $rootScope.match.scouter, team: $rootScope.match.team, teleop: JSON.stringify($rootScope.stacks), auto: JSON.stringify($rootScope.auto), notes: $rootScope.match.notes})
         .success(function(data) {
             console.log(data);
         })

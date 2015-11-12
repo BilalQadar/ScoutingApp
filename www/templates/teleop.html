@@ -13,6 +13,26 @@
       <input type="text" ng-model="match.notes">
     </label>
 
+    <li class="item item-toggle">
+       Totes from Landfill
+       <label class="toggle toggle-balanced">
+         <input type="checkbox" ng-model ="match.landfill">
+         <div class="track">
+           <div class="handle"></div>
+         </div>
+       </label>
+    </li>
+
+    <li class="item item-toggle">
+       Totes from Human Player
+       <label class="toggle toggle-calm">
+         <input type="checkbox" ng-model="match.humanplayer">
+         <div class="track">
+           <div class="handle"></div>
+         </div>
+       </label>
+    </li>
+
   <div ng-repeat="stack in stacks">
     <div class="list card">
 
