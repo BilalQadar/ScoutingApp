@@ -117,25 +117,6 @@ angular.module('starter.controllers', [])
 
 .controller('UploadCtrl', ['$scope', '$state', '$rootScope', '$http', '$window', function($scope, $state, $rootScope, $http, $window) {
 
-  $scope.savedMatches = JSON.parse($window.localStorage['matches'] || '{}');
-  $scope.savedAutos = JSON.parse($window.localStorage['autos'] || '{}');
-  $scope.savedStacks = JSON.parse($window.localStorage['stacks'] || '{}');
-
-  $scope.save = function() {
-
-    $window.localStorage['matches'] = JSON.stringify($scope.savedMatches.push($rootScope.match));
-    $window.localStorage['autos'] = JSON.stringify($scope.savedAutos.push($rootScope.auto));
-    $window.localStorage['stacks'] = JSON.stringify($scope.savedAutos.push($rootScope.stacks));
-
-    $rootScope.stacks = [];
-    $rootScope.stacks.push({size: 1, noodle: false, bin: false, rainbow: false});
-    $rootScope.match.number = $rootScope.match.number + 1;
-    $rootScope.match.team = null;
-    $rootScope.uploaded = "Previous match was recoreded. Thank you!";
-    $state.go('newmatch');
-
-  };
-
   $scope.upload = function() {
 
     $http.post('http://scoutingserver.herokuapp.com/api/matches/', {humanplayer: $rootScope.match.humanplayer, landfill: $rootScope.match.landfill, quadrant: $rootScope.match.quadrant, number: $rootScope.match.number, scouter: $rootScope.match.scouter, team: $rootScope.match.team, teleop: JSON.stringify($rootScope.stacks), auto: JSON.stringify($rootScope.auto), notes: $rootScope.match.notes})
@@ -151,6 +132,12 @@ angular.module('starter.controllers', [])
     $rootScope.stacks.push({size: 1, noodle: false, bin: false, rainbow: false});
     $rootScope.match.number = $rootScope.match.number + 1;
     $rootScope.match.team = null;
+    $rootScope.match.landfill = false;
+    $rootScope.match.humanplayer = false;
+    $rootScope.match.notes = "";
+    $rootScope.auto.speed = 0;
+    $rootScope.auto.bins = 0;
+    $rootScope.auto.stackSize = 0;
     $rootScope.uploaded = "Previous match was uploaded. Thank you!";
     $state.go('newmatch');
 
