@@ -1,28 +1,69 @@
 <ion-view title="Autonomous" hide-nav-bar="false">
 
+  <ion-nav-buttons side="left">
+    <button class="button" ng-click="autoBack()">
+      Back (Match)
+    </button>
+  </ion-nav-buttons>
+
+  <ion-nav-buttons side="right">
+    <button class="button" ng-click="teleop()">
+      Next (Teleop)
+    </button>
+  </ion-nav-buttons>
+
   <ion-content class="padding">
 
       <div class="item item-body">
 
-        <div class="item item-divider">
-          Yellow Tote Stack Size (size: {{auto.stackSize}})
+        <h2 class="item item-input">
+          <span class="input-label">Auto Notes</span>
+          <input type="text" ng-model="match.autoNotes">
+        </h2>
+
+        <div class ="item item-divider">
+          Outer Works
         </div>
 
-        <div class="item range range-dark">
-            <input ng-model = "auto.stackSize" type="range" name="volume" min="0" max="3" value="1">
-        </div>
+        <li class="item item-toggle">
+           Defense Reached
+           <label class="toggle toggle-balanced">
+             <input type="checkbox" ng-model ="auto.defenseReached">
+             <div class="track">
+               <div class="handle"></div>
+             </div>
+           </label>
+        </li>
 
-        <div class="item item-divider">
-          RC Auto Bins (bins: {{auto.bins}})
-        </div>
+        <li class="item item-toggle">
+           Defense Crossed
+           <label class="toggle toggle-balanced">
+             <input type="checkbox" ng-model ="auto.defenseCrossed">
+             <div class="track">
+               <div class="handle"></div>
+             </div>
+           </label>
+        </li>
 
-        <div class="item range range-dark">
-            <input ng-model = "auto.bins" type="range" name="volume" min="0" max="4" value="1">
-        </div>
+        <label class="item item-input item-select">
+          <div class="input-label">
+            Target Defense
+          </div>
+          <select ng-model="auto.defenseType">
+            <option>Portcullis (A)</option>
+            <option>Cheval de Frise (A)</option>
+            <option>Moat (B)</option>
+            <option>Ramparts (B)</option>
+            <option>Drawbridge (C)</option>
+            <option>Sally Port (C)</option>
+            <option>Rock Wall (D)</option>
+            <option>Rough Terrain (D)</option>
+          </select>
+        </label>
 
-        <div class="item item-divider">
-          RC Auto Speed
-        </div>
+        <h1 class="item item-divider">
+          Defense Crossing Time
+        </h1>
 
         <h2 style="margin-left: 20px; font-size: 200%"> {{auto.speed / 100}} </h2>
 
@@ -32,6 +73,28 @@
 
         <button class="button button-clear button-positive" ng-click="reset()">
           Reset
+        </button>
+
+        <h1 class="item item-divider">
+          Auto Boulders in Low Goal (Count: {{auto.lowBall}})
+        </h1>
+
+        <button class="button button-positive" ng-click="incAutoLowBall()">
+          +
+        </button>
+        <button class="button button-positive" ng-click="decAutoLowBall()">
+          -
+        </button>
+
+        <h1 class="item item-divider">
+          Auto Boulders in High Goal (Count: {{auto.highBall}})
+        </h1>
+
+        <button class="button button-positive" ng-click="incAutoHighBall()">
+          +
+        </button>
+        <button class="button button-positive" ng-click="decAutoHighBall()">
+          -
         </button>
 
       </div>
