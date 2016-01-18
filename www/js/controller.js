@@ -67,14 +67,41 @@ angular.module('starter.controllers', [])
   $scope.deleteAttempt = function(index) {
     $interval.cancel($rootScope.defenseAttempts[index].crossInterval);
     $interval.cancel($rootScope.defenseAttempts[index].returnInterval);
+
+    var crossOn = false;
+    var returnOn = false;
+    if ($rootScope.defenseAttempts[index+1].crossInterval)
+    {
+      crossOn = true;
+      $interval.cancel($rootScope.defenseAttempts[index+1].crossInterval);
+    }
+    if ($rootScope.defenseAttempts[index+1].returnInterval)
+    {
+      returnOn = true;
+      $interval.cancel($rootScope.defenseAttempts[index+1].returnInterval);
+    }
+
     $rootScope.defenseAttempts.splice(index, 1);
+
+    if (crossOn)
+    {
+      $rootScope.defenseAttempts[index].crossInterval = $interval(function(){$rootScope.defenseAttempts[index].crossTime++},10,0);
+    }
+    if (returnOn)
+    {
+      $rootScope.defenseAttempts[index].returnInterval = $interval(function(){$rootScope.defenseAttempts[index].returnTime++},10,0);
+    }
+
+    console.log($rootScope.defenseAttempts.length);
   }
 
   $scope.newAttempt = function() {
     $rootScope.defenseAttempts.push({defense: "", success: false, crossTime: 0, returnTime: 0, crossToggle: "Start", crossInterval: null, returnToggle: "Start", returnInterval: null});
+    console.log($rootScope.defenseAttempts.length);
   }
 
   $scope.resetCrossTimer = function(index) {
+    console.log(index);
     $rootScope.defenseAttempts[index].crossTime = 0;
     $interval.cancel($rootScope.defenseAttempts[index].crossInterval);
     $rootScope.defenseAttempts[index].crossToggle = "Start";
@@ -82,6 +109,7 @@ angular.module('starter.controllers', [])
 
   $scope.startCrossTimer = function(index) {
 
+    console.log(index);
     if ($rootScope.defenseAttempts[index].crossToggle == "Stop") {
       $rootScope.defenseAttempts[index].crossToggle = "Start";
       $interval.cancel($rootScope.defenseAttempts[index].crossInterval);
@@ -202,7 +230,7 @@ angular.module('starter.controllers', [])
 
 }])
 
-.controller('UploadCtrl', ['$scope', '$state', '$rootScope', '$http', '$window', function($scope, $state, $rootScope, $http, $window) {
+.controller('UploadCtrl', ['$scope', '$state', '$rootScope', '$http', '$window', '$ionicPopup', function($scope, $state, $rootScope, $http, $window, $ionicPopup) {
 
   $scope.upload = function() {
 
@@ -210,33 +238,45 @@ angular.module('starter.controllers', [])
 
         .success(function(data) {
             $rootScope.uploaded = "Previous match was uploaded. Thank you!";
+            $rootScope.defenseAttempts = []
+            $rootScope.defenseAttempts.push({defense: "", success: false, crossTime: 0, returnTime: 0, toggle: "Start"});
+            $rootScope.match.number = $rootScope.match.number + 1;
+            $rootScope.match.team = null;
+            $rootScope.match.defensiveBot = false;
+            $rootScope.match.offensiveBot = false;
+            $rootScope.match.autoNotes = "";
+            $rootScope.match.teleopNotes = "";
+            $rootScope.auto.speed = 0;
+            $rootScope.auto.lowBall = 0;
+            $rootScope.auto.highBall = 0;
+            $rootScope.auto.defenseCrossed = false;
+            $rootScope.auto.defenseReached = false;
+            $rootScope.auto.defenseType = "";
+            $rootScope.teleop.lowBall = 0;
+            $rootScope.teleop.highBall = 0;
+            $rootScope.teleop.challenge = false;
+            $rootScope.teleop.scale = false;
+            $state.go('newmatch');
+            console.log('Success!')
         })
         .error(function(data) {
             $rootScope.uploaded = "Error...!";
+            console.log('Error!');
+            var confirmPopup = $ionicPopup.alert({
+               title: 'Error!',
+               template: 'Error! Please try again (Ensure that you have internet access).'
+             });
+
         }
     );
 
-    $rootScope.defenseAttempts = []
-    $rootScope.defenseAttempts.push({defense: "", success: false, crossTime: 0, returnTime: 0, toggle: "Start"});
-    $rootScope.match.number = $rootScope.match.number + 1;
-    $rootScope.match.team = null;
-    $rootScope.match.defensiveBot = false;
-    $rootScope.match.offensiveBot = false;
-    $rootScope.match.autoNotes = "";
-    $rootScope.match.teleopNotes = "";
-    $rootScope.auto.speed = 0;
-    $rootScope.auto.lowBall = 0;
-    $rootScope.auto.highBall = 0;
-    $rootScope.auto.defenseCrossed = false;
-    $rootScope.auto.defenseReached = false;
-    $rootScope.auto.defenseType = "";
-    $rootScope.teleop.lowBall = 0;
-    $rootScope.teleop.highBall = 0;
-    $rootScope.teleop.challenge = false;
-    $rootScope.teleop.scale = false;
-    $state.go('newmatch');
+
 
   };
+
+  $scope.returnTeleop = function() {
+    state.go('teleop');
+  }
 
 }])
 
