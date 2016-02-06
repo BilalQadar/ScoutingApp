@@ -62,7 +62,7 @@ angular.module('starter.controllers', [])
 
   $rootScope.defenseAttempts = [];
 
-  $rootScope.defenseAttempts.push({defense: "", success: false, crossTime: 0, returnTime: 0, crossToggle: "Start", crossInterval: null, returnToggle: "Start", returnInterval: null});
+  $rootScope.defenseAttempts.push({defense: "", success: false, undamaged: false, crossTime: 0, returnTime: 0, crossToggle: "Start", crossInterval: null, returnToggle: "Start", returnInterval: null});
 
   $scope.deleteAttempt = function(index) {
     $interval.cancel($rootScope.defenseAttempts[index].crossInterval);
@@ -70,15 +70,21 @@ angular.module('starter.controllers', [])
 
     var crossOn = false;
     var returnOn = false;
-    if ($rootScope.defenseAttempts[index+1].crossInterval)
+
+    if ($rootScope.defenseAttempts[index+1])
     {
-      crossOn = true;
-      $interval.cancel($rootScope.defenseAttempts[index+1].crossInterval);
-    }
-    if ($rootScope.defenseAttempts[index+1].returnInterval)
-    {
-      returnOn = true;
-      $interval.cancel($rootScope.defenseAttempts[index+1].returnInterval);
+
+      if ($rootScope.defenseAttempts[index+1].crossToggle == "Stop")
+      {
+        crossOn = true;
+        $interval.cancel($rootScope.defenseAttempts[index+1].crossInterval);
+      }
+      if ($rootScope.defenseAttempts[index+1].returnToggle == "Stop")
+      {
+        returnOn = true;
+        $interval.cancel($rootScope.defenseAttempts[index+1].returnInterval);
+      }
+
     }
 
     $rootScope.defenseAttempts.splice(index, 1);
@@ -96,7 +102,7 @@ angular.module('starter.controllers', [])
   }
 
   $scope.newAttempt = function() {
-    $rootScope.defenseAttempts.push({defense: "", success: false, crossTime: 0, returnTime: 0, crossToggle: "Start", crossInterval: null, returnToggle: "Start", returnInterval: null});
+    $rootScope.defenseAttempts.push({defense: "", success: false, undamaged: false, crossTime: 0, returnTime: 0, crossToggle: "Start", crossInterval: null, returnToggle: "Start", returnInterval: null});
     console.log($rootScope.defenseAttempts.length);
   }
 
@@ -232,9 +238,84 @@ angular.module('starter.controllers', [])
 
 .controller('UploadCtrl', ['$scope', '$state', '$rootScope', '$http', '$window', '$ionicPopup', function($scope, $state, $rootScope, $http, $window, $ionicPopup) {
 
+  var autoScore = 0;
+
+  autoScore += ($rootScope.auto.lowBall*5) + ($rootScope.auto.highBall*10);
+
+  if ($rootScope.auto.defenseCrossed)
+  {
+    autoScore += 10;
+  }
+  else if ($rootScope.auto.defenseReached)
+  {
+    autoScore += 2;
+  }
+
+  var teleopScore = 0;
+
+  teleopScore += ($rootScope.teleop.lowBall*2) + ($rootScope.teleop.highBall*5);
+
+  for (var i = 0; i<$rootScope.defenseAttempts.length; i++)
+  {
+    if ($rootScope.defenseAttempts[i].success && $rootScope.defenseAttempts[i].undamaged)
+    {
+      teleopScore += 5;
+    }
+  }
+
+  if ($rootScope.teleop.scale)
+  {
+    teleopScore += 15;
+  }
+  else if ($rootScope.teleop.challenge)
+  {
+    teleopScore += 5;
+  }
+
+  $rootScope.totalScore = autoScore + teleopScore;
+
+
+  $rootScope.auto.defenseAttack = "Failed";
+
+  if ($rootScope.auto.defenseCrossed)
+  {
+    $rootScope.auto.defenseAttack = "Crossed";
+  }
+  else if ($rootScope.auto.defenseReached)
+  {
+    $rootScope.auto.defenseAttack = "Reached";
+  }
+
+  $rootScope.match.botType = "No input";
+
+  if ($rootScope.match.defensiveBot && $rootScope.match.offensiveBot)
+  {
+    $rootScope.match.botType = "Hybrid";
+  }
+  else if ($rootScope.match.defensiveBot)
+  {
+    $rootScope.match.botType = "Defensive";
+  }
+  else if ($rootScope.match.offensiveBot)
+  {
+    $rootScope.match.botType = "Offensive";
+  }
+
+  $rootScope.teleop.towerAttack = "Failed";
+
+  if ($rootScope.teleop.scale)
+  {
+    $rootScope.teleop.towerAttack = "Scaled";
+  }
+  else if ($rootScope.teleop.challenge)
+  {
+    $rootScope.teleop.towerAttack = "Challenged"
+  }
+
+
   $scope.upload = function() {
 
-    $http.post('http://scoutingserver.herokuapp.com/api/matches/', {scouter: $rootScope.match.scouter,team: $rootScope.match.team,matchnumber: $rootScope.match.number,quadrant: $rootScope.match.quadrant,offensivebot: $rootScope.match.offensiveBot,defensivebot: $rootScope.match.defensiveBot,autonotes: $rootScope.match.autoNotes,auto: JSON.stringify($rootScope.auto),teleopnotes: $rootScope.match.teleopNotes,teleop: JSON.stringify($rootScope.teleop)})
+    $http.post('http://scoutingserver.herokuapp.com/api/matches/', {scouter: $rootScope.match.scouter,team: $rootScope.match.team,number: $rootScope.match.number,quadrant: $rootScope.match.quadrant,offensivebot: $rootScope.match.offensiveBot,defensivebot: $rootScope.match.defensiveBot,botType: $rootScope.match.botType,autonotes: $rootScope.match.autoNotes,auto: JSON.stringify($rootScope.auto),teleopnotes: $rootScope.match.teleopNotes,teleop: JSON.stringify($rootScope.teleop),totalscore: $rootScope.totalScore})
 
         .success(function(data) {
             $rootScope.uploaded = "Previous match was uploaded. Thank you!";
@@ -256,6 +337,13 @@ angular.module('starter.controllers', [])
             $rootScope.teleop.highBall = 0;
             $rootScope.teleop.challenge = false;
             $rootScope.teleop.scale = false;
+
+            $rootScope.totalScore = 0;
+
+            $rootScope.auto.defenseAttack = "Failed";
+            $rootScope.match.botType = "No input";
+            $rootScope.teleop.towerAttack = "Failed";
+
             $state.go('newmatch');
             console.log('Success!')
         })
@@ -275,7 +363,7 @@ angular.module('starter.controllers', [])
   };
 
   $scope.returnTeleop = function() {
-    state.go('teleop');
+    $state.go('teleop');
   }
 
 }])
@@ -289,346 +377,3 @@ angular.module('starter.controllers', [])
   };
 
 }]);
-
-
-/*
-.directive('timer', ['$compile', function ($compile) {
-    return  {
-      restrict: 'EA',
-      replace: false,
-      scope: {
-        interval: '=interval',
-        startTimeAttr: '=startTime',
-        endTimeAttr: '=endTime',
-        countdownattr: '=countdown',
-        finishCallback: '&finishCallback',
-        autoStart: '&autoStart',
-        language: '@?',
-        fallback: '@?',
-        maxTimeUnit: '=',
-        seconds: '=?',
-        minutes: '=?',
-        hours: '=?',
-        days: '=?',
-        months: '=?',
-        years: '=?',
-        secondsS: '=?',
-        minutesS: '=?',
-        hoursS: '=?',
-        daysS: '=?',
-        monthsS: '=?',
-        yearsS: '=?'
-      },
-      controller: ['$scope', '$element', '$attrs', '$timeout', 'I18nService', '$interpolate', 'progressBarService', function ($scope, $element, $attrs, $timeout, I18nService, $interpolate, progressBarService) {
-
-        // Checking for trim function since IE8 doesn't have it
-        // If not a function, create tirm with RegEx to mimic native trim
-        if (typeof String.prototype.trim !== 'function') {
-          String.prototype.trim = function () {
-            return this.replace(/^\s+|\s+$/g, '');
-          };
-        }
-
-        //angular 1.2 doesn't support attributes ending in "-start", so we're
-        //supporting both "autostart" and "auto-start" as a solution for
-        //backward and forward compatibility.
-        $scope.autoStart = $attrs.autoStart || $attrs.autostart;
-
-
-        $scope.language = $scope.language || 'en';
-        $scope.fallback = $scope.fallback || 'en';
-
-        //allow to change the language of the directive while already launched
-        $scope.$watch('language', function(newVal, oldVal) {
-          if(newVal !== undefined) {
-            i18nService.init(newVal, $scope.fallback);
-          }
-        });
-
-        //init momentJS i18n, default english
-        var i18nService = new I18nService();
-        i18nService.init($scope.language, $scope.fallback);
-
-        //progress bar
-        $scope.displayProgressBar = 0;
-        $scope.displayProgressActive = 'active'; //Bootstrap active effect for progress bar
-
-        if ($element.html().trim().length === 0) {
-          $element.append($compile('<span>' + $interpolate.startSymbol() + 'millis' + $interpolate.endSymbol() + '</span>')($scope));
-        } else {
-          $element.append($compile($element.contents())($scope));
-        }
-
-        $scope.startTime = null;
-        $scope.endTime = null;
-        $scope.timeoutId = null;
-        $scope.countdown = angular.isNumber($scope.countdownattr) && parseInt($scope.countdownattr, 10) >= 0 ? parseInt($scope.countdownattr, 10) : undefined;
-        $scope.isRunning = false;
-
-        $scope.$on('timer-start', function () {
-          $scope.start();
-        });
-
-        $scope.$on('timer-resume', function () {
-          $scope.resume();
-        });
-
-        $scope.$on('timer-stop', function () {
-          $scope.stop();
-        });
-
-        $scope.$on('timer-clear', function () {
-          $scope.clear();
-        });
-
-        $scope.$on('timer-reset', function () {
-          $scope.reset();
-        });
-
-        $scope.$on('timer-set-countdown', function (e, countdown) {
-          $scope.countdown = countdown;
-        });
-
-        function resetTimeout() {
-          if ($scope.timeoutId) {
-            clearTimeout($scope.timeoutId);
-          }
-        }
-
-        $scope.$watch('startTimeAttr', function(newValue, oldValue) {
-          if (newValue !== oldValue && $scope.isRunning) {
-            $scope.start();
-          }
-        });
-
-        $scope.$watch('endTimeAttr', function(newValue, oldValue) {
-          if (newValue !== oldValue && $scope.isRunning) {
-            $scope.start();
-          }
-        });
-
-        $scope.start = $element[0].start = function () {
-          $scope.startTime = $scope.startTimeAttr ? moment($scope.startTimeAttr) : moment();
-          $scope.endTime = $scope.endTimeAttr ? moment($scope.endTimeAttr) : null;
-          if (!angular.isNumber($scope.countdown)) {
-            $scope.countdown = angular.isNumber($scope.countdownattr) && parseInt($scope.countdownattr, 10) > 0 ? parseInt($scope.countdownattr, 10) : undefined;
-          }
-          resetTimeout();
-          tick();
-          $scope.isRunning = true;
-        };
-
-        $scope.resume = $element[0].resume = function () {
-          resetTimeout();
-          if ($scope.countdownattr) {
-            $scope.countdown += 1;
-          }
-          $scope.startTime = moment().diff((moment($scope.stoppedTime).diff(moment($scope.startTime))));
-          tick();
-          $scope.isRunning = true;
-        };
-
-        $scope.stop = $scope.pause = $element[0].stop = $element[0].pause = function () {
-          var timeoutId = $scope.timeoutId;
-          $scope.clear();
-          $scope.$emit('timer-stopped', {timeoutId: timeoutId, millis: $scope.millis, seconds: $scope.seconds, minutes: $scope.minutes, hours: $scope.hours, days: $scope.days});
-        };
-
-        $scope.clear = $element[0].clear = function () {
-          // same as stop but without the event being triggered
-          $scope.stoppedTime = moment();
-          resetTimeout();
-          $scope.timeoutId = null;
-          $scope.isRunning = false;
-        };
-
-        $scope.reset = $element[0].reset = function () {
-          $scope.startTime = $scope.startTimeAttr ? moment($scope.startTimeAttr) : moment();
-          $scope.endTime = $scope.endTimeAttr ? moment($scope.endTimeAttr) : null;
-          $scope.countdown = angular.isNumber($scope.countdownattr) && parseInt($scope.countdownattr, 10) > 0 ? parseInt($scope.countdownattr, 10) : undefined;
-          resetTimeout();
-          tick();
-          $scope.isRunning = false;
-          $scope.clear();
-        };
-
-        $element.bind('$destroy', function () {
-          resetTimeout();
-          $scope.isRunning = false;
-        });
-
-
-        function calculateTimeUnits() {
-          var timeUnits = {}; //will contains time with units
-
-          if ($attrs.startTime !== undefined){
-            $scope.millis = moment().diff(moment($scope.startTimeAttr));
-          }
-
-          timeUnits = i18nService.getTimeUnits($scope.millis);
-
-          // compute time values based on maxTimeUnit specification
-          if (!$scope.maxTimeUnit || $scope.maxTimeUnit === 'day') {
-            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
-            $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
-            $scope.hours = Math.floor((($scope.millis / (3600000)) % 24));
-            $scope.days = Math.floor((($scope.millis / (3600000)) / 24));
-            $scope.months = 0;
-            $scope.years = 0;
-          } else if ($scope.maxTimeUnit === 'second') {
-            $scope.seconds = Math.floor($scope.millis / 1000);
-            $scope.minutes = 0;
-            $scope.hours = 0;
-            $scope.days = 0;
-            $scope.months = 0;
-            $scope.years = 0;
-          } else if ($scope.maxTimeUnit === 'minute') {
-            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
-            $scope.minutes = Math.floor($scope.millis / 60000);
-            $scope.hours = 0;
-            $scope.days = 0;
-            $scope.months = 0;
-            $scope.years = 0;
-          } else if ($scope.maxTimeUnit === 'hour') {
-            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
-            $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
-            $scope.hours = Math.floor($scope.millis / 3600000);
-            $scope.days = 0;
-            $scope.months = 0;
-            $scope.years = 0;
-          } else if ($scope.maxTimeUnit === 'month') {
-            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
-            $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
-            $scope.hours = Math.floor((($scope.millis / (3600000)) % 24));
-            $scope.days = Math.floor((($scope.millis / (3600000)) / 24) % 30);
-            $scope.months = Math.floor((($scope.millis / (3600000)) / 24) / 30);
-            $scope.years = 0;
-          } else if ($scope.maxTimeUnit === 'year') {
-            $scope.seconds = Math.floor(($scope.millis / 1000) % 60);
-            $scope.minutes = Math.floor((($scope.millis / (60000)) % 60));
-            $scope.hours = Math.floor((($scope.millis / (3600000)) % 24));
-            $scope.days = Math.floor((($scope.millis / (3600000)) / 24) % 30);
-            $scope.months = Math.floor((($scope.millis / (3600000)) / 24 / 30) % 12);
-            $scope.years = Math.floor(($scope.millis / (3600000)) / 24 / 365);
-          }
-          // plural - singular unit decision (old syntax, for backwards compatibility and English only, could be deprecated!)
-          $scope.secondsS = ($scope.seconds === 1) ? '' : 's';
-          $scope.minutesS = ($scope.minutes === 1) ? '' : 's';
-          $scope.hoursS = ($scope.hours === 1) ? '' : 's';
-          $scope.daysS = ($scope.days === 1)? '' : 's';
-          $scope.monthsS = ($scope.months === 1)? '' : 's';
-          $scope.yearsS = ($scope.years === 1)? '' : 's';
-
-
-          // new plural-singular unit decision functions (for custom units and multilingual support)
-          $scope.secondUnit = timeUnits.seconds;
-          $scope.minuteUnit = timeUnits.minutes;
-          $scope.hourUnit = timeUnits.hours;
-          $scope.dayUnit = timeUnits.days;
-          $scope.monthUnit = timeUnits.months;
-          $scope.yearUnit = timeUnits.years;
-
-          //add leading zero if number is smaller than 10
-          $scope.sseconds = $scope.seconds < 10 ? '0' + $scope.seconds : $scope.seconds;
-          $scope.mminutes = $scope.minutes < 10 ? '0' + $scope.minutes : $scope.minutes;
-          $scope.hhours = $scope.hours < 10 ? '0' + $scope.hours : $scope.hours;
-          $scope.ddays = $scope.days < 10 ? '0' + $scope.days : $scope.days;
-          $scope.mmonths = $scope.months < 10 ? '0' + $scope.months : $scope.months;
-          $scope.yyears = $scope.years < 10 ? '0' + $scope.years : $scope.years;
-
-        }
-
-        //determine initial values of time units and add AddSeconds functionality
-        if ($scope.countdownattr) {
-          $scope.millis = $scope.countdownattr * 1000;
-
-          $scope.addCDSeconds = $element[0].addCDSeconds = function (extraSeconds) {
-            $scope.countdown += extraSeconds;
-            $scope.$digest();
-            if (!$scope.isRunning) {
-              $scope.start();
-            }
-          };
-
-          $scope.$on('timer-add-cd-seconds', function (e, extraSeconds) {
-            $timeout(function () {
-              $scope.addCDSeconds(extraSeconds);
-            });
-          });
-
-          $scope.$on('timer-set-countdown-seconds', function (e, countdownSeconds) {
-            if (!$scope.isRunning) {
-              $scope.clear();
-            }
-
-            $scope.countdown = countdownSeconds;
-            $scope.millis = countdownSeconds * 1000;
-            calculateTimeUnits();
-          });
-        } else {
-          $scope.millis = 0;
-        }
-        calculateTimeUnits();
-
-        var tick = function tick() {
-          var typeTimer = null; // countdown or endTimeAttr
-          $scope.millis = moment().diff($scope.startTime);
-          var adjustment = $scope.millis % 1000;
-
-          if ($scope.endTimeAttr) {
-            typeTimer = $scope.endTimeAttr;
-            $scope.millis = moment($scope.endTime).diff(moment());
-            adjustment = $scope.interval - $scope.millis % 1000;
-          }
-
-          if ($scope.countdownattr) {
-            typeTimer = $scope.countdownattr;
-            $scope.millis = $scope.countdown * 1000;
-          }
-
-          if ($scope.millis < 0) {
-            $scope.stop();
-            $scope.millis = 0;
-            calculateTimeUnits();
-            if($scope.finishCallback) {
-              $scope.$eval($scope.finishCallback);
-            }
-            return;
-          }
-          calculateTimeUnits();
-
-          //We are not using $timeout for a reason. Please read here - https://github.com/siddii/angular-timer/pull/5
-          $scope.timeoutId = setTimeout(function () {
-            tick();
-            $scope.$digest();
-          }, $scope.interval - adjustment);
-
-          $scope.$emit('timer-tick', {timeoutId: $scope.timeoutId, millis: $scope.millis, timerElement: $element[0]});
-
-          if ($scope.countdown > 0) {
-            $scope.countdown--;
-          }
-          else if ($scope.countdown <= 0) {
-            $scope.stop();
-            if($scope.finishCallback) {
-              $scope.$eval($scope.finishCallback);
-            }
-          }
-
-          if(typeTimer !== null){
-            //calculate progress bar
-            $scope.progressBar = progressBarService.calculateProgressBar($scope.startTime, $scope.millis, $scope.endTime, $scope.countdownattr);
-
-            if($scope.progressBar === 100){
-              $scope.displayProgressActive = ''; //No more Bootstrap active effect
-            }
-          }
-        };
-
-        if ($scope.autoStart === undefined || $scope.autoStart === true) {
-          $scope.start();
-        }
-      }]
-    };
-    }]);
-*/
