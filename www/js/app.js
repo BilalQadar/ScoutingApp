@@ -25,7 +25,13 @@ angular.module('starter', ['ionic','starter.controllers', 'firebase'])
 
 })
 
-// defining states of different views, and creating the reference to its .html file and URL
+
+// Defining states of different views, and creating the reference to its .html file and URL
+
+// state is the name of the state -> used when changing states
+// url is the suffix to the server url
+// templateUrl is the url of the html template
+// controller is the reference to the controller in controller.js
 
 .config(function($stateProvider, $urlRouterProvider) {
     $stateProvider
@@ -69,6 +75,7 @@ angular.module('starter', ['ionic','starter.controllers', 'firebase'])
                                 templateUrl: 'templates/upload.html',
                                 controller: 'UploadCtrl'
                             })
+
 
     // defaults URL/state to the splash screen (first screen)
 

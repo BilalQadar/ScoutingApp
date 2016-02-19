@@ -7,8 +7,8 @@
   </ion-nav-buttons>
 
   <ion-nav-buttons side="right">
-    <button class="button" ng-click="newAttempt()">
-      Add Defense Crossing Attempt
+    <button class="button" ng-click="upload()">
+      Next (Upload)
     </button>
   </ion-nav-buttons>
 
@@ -16,86 +16,88 @@
 
     <div class="item item-body">
 
-    <h2 class="item item-input">
-      <span class="input-label">Teleop Notes</span>
-      <input type="text" ng-model="match.teleopNotes">
-    </h2>
-
-    <div class="item item-divider">
-      Robot
-    </div>
-
-    <li class="item item-toggle">
-       Defensive Robot
-       <label class="toggle toggle-balanced">
-         <input type="checkbox" ng-model ="match.defensiveBot">
-         <div class="track">
-           <div class="handle"></div>
-         </div>
-       </label>
-    </li>
-
-    <li class="item item-toggle">
-       Offensive Robot
-       <label class="toggle toggle-balanced">
-         <input type="checkbox" ng-model="match.offensiveBot">
-         <div class="track">
-           <div class="handle"></div>
-         </div>
-       </label>
-    </li>
-
-    <div class="item item-divider">
-      End Game
-    </div>
-
-    <li class="item item-toggle">
-       Tower Challenged
-       <label class="toggle toggle-calm">
-         <input type="checkbox" ng-model="teleop.challenge">
-         <div class="track">
-           <div class="handle"></div>
-         </div>
-       </label>
-    </li>
-
-    <li class="item item-toggle">
-       Tower Scaled
-       <label class="toggle toggle-calm">
-         <input type="checkbox" ng-model="teleop.scale">
-         <div class="track">
-           <div class="handle"></div>
-         </div>
-       </label>
-    </li>
-
     <h1 class="item item-divider">
       Boulders in Low Goal (Count: {{teleop.lowBall}})
+      <br>
+      <button class="button button-positive padding button-half" ng-click="incLowBall()" style="font-size: 35px">
+        +
+      </button>
+      <button class="button button-positive padding button-half" ng-click="decLowBall()" style="font-size: 35px">
+        -
+      </button>
     </h1>
 
-    <button class="button button-positive" ng-click="incLowBall()">
-      +
-    </button>
-    <button class="button button-positive" ng-click="decLowBall()">
-      -
-    </button>
+
 
     <h1 class="item item-divider">
       Boulders in High Goal (Count: {{teleop.highBall}})
+      <br>
+      <button class="button button-positive padding button-half" ng-click="incHighBall()" style="font-size: 35px">
+        +
+      </button>
+      <button class="button button-positive padding button-half" ng-click="decHighBall()" style="font-size: 35px">
+        -
+      </button>
     </h1>
 
-    <button class="button button-positive" ng-click="incHighBall()">
-      +
+
+
+    <div class ="item item-divider">
+      Outer Works Attack in Teleop
+    </div>
+
+    <button class="button button-block padding {{teleop.definedDefensesTeleop.firstDefenseState}}" ng-click="switchDefense(1)" style="font-size: 35px">
+        {{match.defenseOne}} {{teleop.definedDefensesTeleop.firstDefenseLabel}}
     </button>
-    <button class="button button-positive" ng-click="decHighBall()">
-      -
+
+    <button class="button button-block padding {{teleop.definedDefensesTeleop.secondDefenseState}}" ng-click="switchDefense(2)" style="font-size: 35px">
+        {{match.defenseTwo}} {{teleop.definedDefensesTeleop.secondDefenseLabel}}
+    </button>
+
+    <button class="button button-block padding {{teleop.definedDefensesTeleop.thirdDefenseState}}" ng-click="switchDefense(3)" style="font-size: 35px">
+        {{match.defenseThree}} {{teleop.definedDefensesTeleop.thirdDefenseLabel}}
+    </button>
+
+    <button class="button button-block padding {{teleop.definedDefensesTeleop.fourthDefenseState}}" ng-click="switchDefense(4)" style="font-size: 35px">
+        {{match.defenseFour}} {{teleop.definedDefensesTeleop.fourthDefenseLabel}}
+    </button>
+
+    <button class="button button-block padding {{teleop.definedDefensesTeleop.fifthDefenseState}}" ng-click="switchDefense(5)" style="font-size: 35px">
+        {{match.defenseFive}} {{teleop.definedDefensesTeleop.fifthDefenseLabel}}
+    </button>
+
+    <h1 class="item item-divider">
+      Total Damage Dealt to Outer Works (Count: {{teleop.totalDamage}})
+      <br>
+      <button class="button button-positive padding button-half" ng-click="incTotalDamage()" style="font-size: 35px">
+        +
+      </button>
+      <button class="button button-positive padding button-half" ng-click="decTotalDamage()" style="font-size: 35px">
+        -
+      </button>
+    </h1>
+
+    </div>
+
+    <br>
+
+    <div class="item item-divider">
+      Cycle Time
+    </div>
+
+    <h2 style="margin-left: 20px; font-size: 200%"> {{teleop.cycleTime / 100}} </h2>
+
+    <button class="button button-clear button-positive" ng-click="startCycleTimer()">
+      {{teleop.cycleTimeToggle}}
+    </button>
+
+    <button class="button button-clear button-positive" ng-click="resetCycleTimer()">
+      Reset
     </button>
 
 
-  </div>
-
-  <div ng-repeat="attempt in defenseAttempts track by $index">
-    <div class="list card">
+    <!-- <div ng-repeat="attempt in defenseAttempts track by $index">
+      <div class="list card">
 
         <div class="item item-divider padding">
           Defense Crossing Attempt {{$index + 1}}
@@ -175,7 +177,26 @@
             </button>
 
       </div>
+    </div> -->
+
+    <div class="item item-divider">
+      End Game
     </div>
+
+    <button class="button button-block padding {{towerAttack.towerState}}" ng-click="switchTowerAttack()" style="font-size: 35px">
+        Tower {{towerAttack.towerLabel}}
+    </button>
+
+    <br>
+
+
+
+    <h2 class="item item-input">
+      <span class="input-label">
+        Teleop Notes
+      </span>
+      <input type="text" ng-model="match.teleopNotes">
+    </h2>
 
     <button class="button button-block padding button-outline button-positive" ng-click="upload()">
       Upload

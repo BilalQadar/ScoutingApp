@@ -1,7 +1,9 @@
 <ion-view view-title="New Match">
   <ion-content class="padding">
 
-    {{uploaded}}
+    <h3>
+      {{uploaded}}
+    </h3>
 
     <label class="item item-input">
       <span class="input-label">Scouter</span>
@@ -32,9 +34,131 @@
       <input type="number" ng-model="match.team">
     </label>
 
+    <br>
+
+    <div class="item item-divider">
+      Robot
+    </div>
+
+    <li class="item item-toggle">
+       Defensive Robot
+       <label class="toggle toggle-balanced">
+         <input type="checkbox" ng-model ="match.defensiveBot">
+         <div class="track">
+           <div class="handle"></div>
+         </div>
+       </label>
+    </li>
+
+
+    <li class="item item-toggle">
+       Offensive Robot
+       <label class="toggle toggle-balanced">
+         <input type="checkbox" ng-model="match.offensiveBot">
+         <div class="track">
+           <div class="handle"></div>
+         </div>
+       </label>
+    </li>
+
+    <br>
+
+    <div class="item item-divider">
+      Define Enemy Alliance Outer Works Defenses
+    </div>
+
+    <label class="item item-input item-select">
+      <div class="input-label">
+        First Defense
+      </div>
+      <select ng-model="match.defenseOne">
+        <option>Low Bar</option>
+      </select>
+    </label>
+
+    <label class="item item-input item-select">
+      <div class="input-label">
+        Second Defense
+      </div>
+      <select ng-model="match.defenseTwo">
+        <option>Portcullis (A)</option>
+        <option>Cheval de Frise (A)</option>
+        <option>Moat (B)</option>
+        <option>Ramparts (B)</option>
+        <option>Drawbridge (C)</option>
+        <option>Sally Port (C)</option>
+        <option>Rock Wall (D)</option>
+        <option>Rough Terrain (D)</option>
+      </select>
+    </label>
+
+    <label class="item item-input item-select">
+      <div class="input-label">
+        Third Defense
+      </div>
+      <select ng-model="match.defenseThree">
+        <option>Portcullis (A)</option>
+        <option>Cheval de Frise (A)</option>
+        <option>Moat (B)</option>
+        <option>Ramparts (B)</option>
+        <option>Drawbridge (C)</option>
+        <option>Sally Port (C)</option>
+        <option>Rock Wall (D)</option>
+        <option>Rough Terrain (D)</option>
+      </select>
+    </label>
+
+    <label class="item item-input item-select">
+      <div class="input-label">
+        Fourth Defense
+      </div>
+      <select ng-model="match.defenseFour">
+        <option>Portcullis (A)</option>
+        <option>Cheval de Frise (A)</option>
+        <option>Moat (B)</option>
+        <option>Ramparts (B)</option>
+        <option>Drawbridge (C)</option>
+        <option>Sally Port (C)</option>
+        <option>Rock Wall (D)</option>
+        <option>Rough Terrain (D)</option>
+      </select>
+    </label>
+
+    <label class="item item-input item-select">
+      <div class="input-label">
+        Fifth Defense
+      </div>
+      <select ng-model="match.defenseFive">
+        <option>Portcullis (A)</option>
+        <option>Cheval de Frise (A)</option>
+        <option>Moat (B)</option>
+        <option>Ramparts (B)</option>
+        <option>Drawbridge (C)</option>
+        <option>Sally Port (C)</option>
+        <option>Rock Wall (D)</option>
+        <option>Rough Terrain (D)</option>
+      </select>
+    </label>
+
     <button class="button button-block padding button-outline button-positive" ng-click="auto()">
       Proceed To Autonomous
     </button>
+
+    <div class="item item-divider">
+      Types of Defenses
+    </div>
+
+    <br>
+
+    <IMG SRC="img/Low Bar.png" WIDTH=130 HEIGHT=170>
+    <IMG SRC="img/Portcullis (A).png" WIDTH=130 HEIGHT=170>
+    <IMG SRC="img/Cheval De Frise (A).png" WIDTH=130 HEIGHT=170>
+    <IMG SRC="img/Moat (B).png" WIDTH=130 HEIGHT=170>
+    <IMG SRC="img/Ramparts (B).png" WIDTH=130 HEIGHT=170>
+    <IMG SRC="img/Drawbridge (C).png" WIDTH=130 HEIGHT=170>
+    <IMG SRC="img/Sally Port (C).png" WIDTH=130 HEIGHT=170>
+    <IMG SRC="img/Rock Wall (D).png" WIDTH=130 HEIGHT=170>
+    <IMG SRC="img/Rough Terrain (D).png" WIDTH=130 HEIGHT=170>
 
   </ion-content>
 </ion-view>

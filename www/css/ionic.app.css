@@ -15,6 +15,11 @@ $assertive:                       #ef473a !default;
 $royal:                           #886aea !default;
 $dark:                            #444 !default;
 */
+
+#webmenu{
+width:340px;
+}
+
 .backing {
   background: #000000; }
 
@@ -6641,6 +6646,12 @@ progress {
   .button.button-block, .button.button-full {
     margin-top: 10px;
     margin-bottom: 10px; }
+  .button.button-half, .button.button-full {
+    margin-top: 10px;
+    margin-bottom: 10px; }
+  .button.button-quarter, .button.button-full {
+    margin-top: 10px;
+    margin-bottom: 10px; }
   .button.button-light {
     border-color: #ddd;
     background-color: #fff;
@@ -6964,6 +6975,18 @@ progress {
   .button-block:after {
     clear: both; }
 
+.padding > .button.button-half:first-child {
+  margin-top: 0; }
+
+/*.button-half {
+  display: block;
+  clear: both; }
+  .button-half:after {
+    clear: both; }*/
+
+.padding > .button.button-quarter:first-child {
+  margin-top: 0; }
+
 .button-full, .button-full > .button {
   display: block;
   margin-right: 0;
@@ -6974,6 +6997,12 @@ progress {
 
 button.button-block, button.button-full, .button-full > button.button, input.button.button-block {
   width: 100%; }
+
+button.button-half, button.button-full, .button-full > button.button, input.button.button-half {
+  width: 49%; }
+
+button.button-quarter, button.button-full, .button-full > button.button, input.button.button-quarter {
+  width: 24%; }
 
 a.button {
   text-decoration: none; }
