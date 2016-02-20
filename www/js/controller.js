@@ -77,7 +77,7 @@ angular.module('starter.controllers', [])
 
 .controller('AutoCtrl', ['$scope', '$state', '$rootScope', '$ionicPopup', '$timeout', function($scope, $state, $rootScope, $ionicPopup, $timeout) {
 
-  $rootScope.auto = {speed: 0, lowBall: 0, highBall: 0, definedDefensesAuto: null};
+  $rootScope.auto = {lowBall: 0, highBall: 0, definedDefensesAuto: null};
 
   $rootScope.auto.definedDefensesAuto = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
                                 secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
@@ -175,7 +175,9 @@ angular.module('starter.controllers', [])
 .controller('TeleopCtrl', ['$scope', '$state', '$ionicPopup', '$rootScope', '$http', '$interval', function($scope, $state, $ionicPopup, $rootScope, $http, $interval) {
 
   // Define teleop variables
-  $rootScope.teleop = {lowBall: 0, highBall: 0, challenge: false, scale: false, totalDamage: 0, cycleTime: 0, definedDefensesTeleop: null}
+  $rootScope.teleop = {lowBall: 0, highBall: 0, totalDamage: 0, cycleTime: 0, definedDefensesTeleop: null}
+
+  $rootScope.teleop.towerAttack = {towerState: "button-calm", towerLabel: "Defended"}
 
   $rootScope.teleop.definedDefensesTeleop = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
                                       secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
@@ -231,21 +233,19 @@ angular.module('starter.controllers', [])
                         $rootScope.teleop.definedDefensesTeleop.fifthDefenseLabel = defenseLabel;}
   }
 
-  $rootScope.towerAttack = {towerState: "button-calm", towerLabel: "Defended"}
-
   $scope.switchTowerAttack = function() {
 
-    if ($rootScope.towerAttack.towerState == "button-calm"){
-      $rootScope.towerAttack.towerState = "button-royal";
-      $rootScope.towerAttack.towerLabel = "Challenged";
+    if ($rootScope.teleop.towerAttack.towerState == "button-calm"){
+      $rootScope.teleop.towerAttack.towerState = "button-royal";
+      $rootScope.teleop.towerAttack.towerLabel = "Challenged";
     }
-    else if ($rootScope.towerAttack.towerState == "button-royal"){
-      $rootScope.towerAttack.towerState = "button-dark";
-      $rootScope.towerAttack.towerLabel = "Scaled";
+    else if ($rootScope.teleop.towerAttack.towerState == "button-royal"){
+      $rootScope.teleop.towerAttack.towerState = "button-dark";
+      $rootScope.teleop.towerAttack.towerLabel = "Scaled";
     }
-    else if ($rootScope.towerAttack.towerState == "button-dark"){
-      $rootScope.towerAttack.towerState = "button-calm";
-      $rootScope.towerAttack.towerLabel = "Defended";
+    else if ($rootScope.teleop.towerAttack.towerState == "button-dark"){
+      $rootScope.teleop.towerAttack.towerState = "button-calm";
+      $rootScope.teleop.towerAttack.towerLabel = "Defended";
     }
 
   }
@@ -368,17 +368,6 @@ angular.module('starter.controllers', [])
 
   // Logic to define additional variables
 
-  $rootScope.auto.defenseAttack = "Failed";
-
-  if ($rootScope.auto.defenseCrossed)
-  {
-    $rootScope.auto.defenseAttack = "Crossed";
-  }
-  else if ($rootScope.auto.defenseReached)
-  {
-    $rootScope.auto.defenseAttack = "Reached";
-  }
-
   $rootScope.match.botType = "No input";
 
   if ($rootScope.match.defensiveBot && $rootScope.match.offensiveBot)
@@ -392,17 +381,6 @@ angular.module('starter.controllers', [])
   else if ($rootScope.match.offensiveBot)
   {
     $rootScope.match.botType = "Offensive";
-  }
-
-  $rootScope.teleop.towerAttack = "Failed";
-
-  if ($rootScope.teleop.scale)
-  {
-    $rootScope.teleop.towerAttack = "Scaled";
-  }
-  else if ($rootScope.teleop.challenge)
-  {
-    $rootScope.teleop.towerAttack = "Challenged"
   }
 
 
