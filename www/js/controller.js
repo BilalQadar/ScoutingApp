@@ -32,9 +32,9 @@ angular.module('starter.controllers', [])
   //                     autoNotes: "", teleopNotes: "", defensiveBot: false, offensiveBot: false};
 
   // Test Match Variables
-  $rootScope.match = {defenseOne: "Low Bar", defenseTwo: "Portcullis (A)", defenseThree: "Moat (B)",
-                      defenseFour: "Drawbridge (C)", defenseFive: "Rock Wall (D)",
-                      scouter: "===Test Scouter===", quadrant: "Blue Mid", team: 1325, number: 9001,
+  $rootScope.match = {defenseOne: "Low Bar", defenseTwo: "", defenseThree: "",
+                      defenseFour: "", defenseFive: "",
+                      scouter: "", quadrant: "", team: null, number: null,
                       autoNotes: "", teleopNotes: "", defensiveBot: false, offensiveBot: false};
 
 
@@ -391,7 +391,7 @@ angular.module('starter.controllers', [])
     // $http.post('http://localhost:8102/', {scouter: $rootScope.match.scouter,team: $rootScope.match.team,number: $rootScope.match.number,quadrant: $rootScope.match.quadrant,offensivebot: $rootScope.match.offensiveBot,defensivebot: $rootScope.match.defensiveBot,botType: $rootScope.match.botType,autonotes: $rootScope.match.autoNotes,auto: JSON.stringify($rootScope.auto),teleopnotes: $rootScope.match.teleopNotes,teleop: JSON.stringify($rootScope.teleop),totalscore: $rootScope.totalScore})
 
     // Posts information to the scouting URL
-    $http.post('http://scoutingserver.herokuapp.com/api/matches/', {scouter: $rootScope.match.scouter,team: $rootScope.match.team,number: $rootScope.match.number,quadrant: $rootScope.match.quadrant,offensivebot: $rootScope.match.offensiveBot,defensivebot: $rootScope.match.defensiveBot,botType: $rootScope.match.botType,autonotes: $rootScope.match.autoNotes,auto: JSON.stringify($rootScope.auto),teleopnotes: $rootScope.match.teleopNotes,teleop: JSON.stringify($rootScope.teleop),totalscore: $rootScope.totalScore, defenseOne: $rootScope.match.defenseOne, defenseTwo: $rootScope.match.defenseTwo, defenseThree: $rootScope.match.defenseThree, defenseFour: $rootScope.match.defenseFour, defenseFive: $rootScope.match.defenseFive})
+    $http.post('http://scoutingserver.herokuapp.com/api/matches/', {scouter: $rootScope.match.scouter,team: $rootScope.match.team,number: $rootScope.match.number,quadrant: $rootScope.match.quadrant,botType: $rootScope.match.botType,autonotes: $rootScope.match.autoNotes,auto: JSON.stringify($rootScope.auto),teleopnotes: $rootScope.match.teleopNotes,teleop: JSON.stringify($rootScope.teleop),totalscore: $rootScope.totalScore, defenseOne: $rootScope.match.defenseOne, defenseTwo: $rootScope.match.defenseTwo, defenseThree: $rootScope.match.defenseThree, defenseFour: $rootScope.match.defenseFour, defenseFive: $rootScope.match.defenseFive})
 
         // Triggered code when post is a success
         .success(function(data) {
