@@ -183,7 +183,7 @@ angular.module('starter.controllers', [])
                                       secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
                                       thirdDefenseState: "button-calm", thirdDefenseLabel: "Failed",
                                       fourthDefenseState: "button-calm", fourthDefenseLabel: "Failed",
-                                      fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"};
+                                      fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"}
 
   $scope.incTotalDamage = function() {
     $rootScope.teleop.totalDamage++;
@@ -309,6 +309,60 @@ angular.module('starter.controllers', [])
      confirmPopup.then(function(res) {
        if(res) {
 
+         // Calculating Algothirthm for the Total Score Contribution
+
+         var autoScore = 0;
+         autoScore += ($rootScope.auto.lowBall*5) + ($rootScope.auto.highBall*10);
+         if ($rootScope.auto.definedDefensesAuto.firstDefenseLabel == "Crossed" ||
+             $rootScope.auto.definedDefensesAuto.secondDefenseLabel == "Crossed" ||
+             $rootScope.auto.definedDefensesAuto.thirdDefenseLabel == "Crossed" ||
+             $rootScope.auto.definedDefensesAuto.fourthDefenseLabel == "Crossed" ||
+             $rootScope.auto.definedDefensesAuto.fifthDefenseLabel == "Crossed")
+         {
+           autoScore += 10;
+         }
+         else if ($rootScope.auto.definedDefensesAuto.firstDefenseLabel == "Reached" ||
+                 $rootScope.auto.definedDefensesAuto.secondDefenseLabel == "Reached" ||
+                 $rootScope.auto.definedDefensesAuto.thirdDefenseLabel == "Reached" ||
+                 $rootScope.auto.definedDefensesAuto.fourthDefenseLabel == "Reached" ||
+                 $rootScope.auto.definedDefensesAuto.fifthDefenseLabel == "Reached")
+         {
+           autoScore += 2;
+         }
+
+         var teleopScore = 0;
+         teleopScore += ($rootScope.teleop.lowBall*2) + ($rootScope.teleop.highBall*5);
+
+         if ($rootScope.teleop.scale)
+         {
+           teleopScore += 15;
+         }
+         else if ($rootScope.teleop.challenge)
+         {
+           teleopScore += 5;
+         }
+
+         teleopScore += $rootScope.teleop.totalDamage * 5;
+
+         $rootScope.totalScore = autoScore + teleopScore;
+
+         // Logic to define additional variables
+
+         $rootScope.match.botType = "No input";
+
+         if ($rootScope.match.defensiveBot && $rootScope.match.offensiveBot)
+         {
+           $rootScope.match.botType = "Hybrid";
+         }
+         else if ($rootScope.match.defensiveBot)
+         {
+           $rootScope.match.botType = "Defensive";
+         }
+         else if ($rootScope.match.offensiveBot)
+         {
+           $rootScope.match.botType = "Offensive";
+         }
+
          $state.go('upload'); // Change state to 'upload'
 
          console.log('You are sure');
@@ -328,61 +382,6 @@ angular.module('starter.controllers', [])
 // Control Code for the Upload (6th) Webpage
 
 .controller('UploadCtrl', ['$scope', '$state', '$rootScope', '$http', '$window', '$ionicPopup', function($scope, $state, $rootScope, $http, $window, $ionicPopup) {
-
-  // Calculating Algothirthm for the Total Score Contribution
-
-  var autoScore = 0;
-  autoScore += ($rootScope.auto.lowBall*5) + ($rootScope.auto.highBall*10);
-  if ($rootScope.auto.definedDefensesAuto.firstDefenseLabel == "Crossed" ||
-      $rootScope.auto.definedDefensesAuto.secondDefenseLabel == "Crossed" ||
-      $rootScope.auto.definedDefensesAuto.thirdDefenseLabel == "Crossed" ||
-      $rootScope.auto.definedDefensesAuto.fourthDefenseLabel == "Crossed" ||
-      $rootScope.auto.definedDefensesAuto.fifthDefenseLabel == "Crossed")
-  {
-    autoScore += 10;
-  }
-  else if ($rootScope.auto.definedDefensesAuto.firstDefenseLabel == "Reached" ||
-          $rootScope.auto.definedDefensesAuto.secondDefenseLabel == "Reached" ||
-          $rootScope.auto.definedDefensesAuto.thirdDefenseLabel == "Reached" ||
-          $rootScope.auto.definedDefensesAuto.fourthDefenseLabel == "Reached" ||
-          $rootScope.auto.definedDefensesAuto.fifthDefenseLabel == "Reached")
-  {
-    autoScore += 2;
-  }
-
-  var teleopScore = 0;
-  teleopScore += ($rootScope.teleop.lowBall*2) + ($rootScope.teleop.highBall*5);
-
-  if ($rootScope.teleop.scale)
-  {
-    teleopScore += 15;
-  }
-  else if ($rootScope.teleop.challenge)
-  {
-    teleopScore += 5;
-  }
-
-  teleopScore += $rootScope.teleop.totalDamage * 5;
-
-  $rootScope.totalScore = autoScore + teleopScore;
-
-  // Logic to define additional variables
-
-  $rootScope.match.botType = "No input";
-
-  if ($rootScope.match.defensiveBot && $rootScope.match.offensiveBot)
-  {
-    $rootScope.match.botType = "Hybrid";
-  }
-  else if ($rootScope.match.defensiveBot)
-  {
-    $rootScope.match.botType = "Defensive";
-  }
-  else if ($rootScope.match.offensiveBot)
-  {
-    $rootScope.match.botType = "Offensive";
-  }
-
 
   // Uploads the information to the scouting server
 
@@ -406,18 +405,26 @@ angular.module('starter.controllers', [])
             $rootScope.auto.speed = 0;
             $rootScope.auto.lowBall = 0;
             $rootScope.auto.highBall = 0;
-            $rootScope.auto.definedDefensesAuto = null;
+            $rootScope.auto.definedDefensesAuto = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
+                                          secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
+                                          thirdDefenseState: "button-calm", thirdDefenseLabel: "Failed",
+                                          fourthDefenseState: "button-calm", fourthDefenseLabel: "Failed",
+                                          fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"};
             $rootScope.teleop.lowBall = 0;
             $rootScope.teleop.highBall = 0;
-            $rootScope.teleop.challenge = false;
-            $rootScope.teleop.scale = false;
-            $rootScope.teleop.definedDefensesTeleop = null;
+            $rootScope.teleop.totalDamage = 0;
+            $rootScope.teleop.cycleTime = 0;
+            $rootScope.teleop.definedDefensesTeleop = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
+                                                secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
+                                                thirdDefenseState: "button-calm", thirdDefenseLabel: "Failed",
+                                                fourthDefenseState: "button-calm", fourthDefenseLabel: "Failed",
+                                                fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"};
 
             $rootScope.totalScore = 0;
 
             $rootScope.auto.defenseAttack = "Failed";
             $rootScope.match.botType = "No input";
-            $rootScope.teleop.towerAttack = "Failed";
+            $rootScope.teleop.towerAttack = {towerState: "button-calm", towerLabel: "Defended"}
 
             $state.go('newmatch'); // Set state to 'newmatch'
             console.log('Success!')
