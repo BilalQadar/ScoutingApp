@@ -387,8 +387,10 @@ angular.module('starter.controllers', [])
 
   $scope.upload = function() {
 
-    // Testing
-    // $http.post('http://localhost:8102/', {scouter: $rootScope.match.scouter,team: $rootScope.match.team,number: $rootScope.match.number,quadrant: $rootScope.match.quadrant,offensivebot: $rootScope.match.offensiveBot,defensivebot: $rootScope.match.defensiveBot,botType: $rootScope.match.botType,autonotes: $rootScope.match.autoNotes,auto: JSON.stringify($rootScope.auto),teleopnotes: $rootScope.match.teleopNotes,teleop: JSON.stringify($rootScope.teleop),totalscore: $rootScope.totalScore})
+    var confirmPopup = $ionicPopup.alert({
+       title: 'Loading',
+       template: 'Please Wait...'
+     });
 
     // Posts information to the scouting URL
     $http.post('http://scoutingserver.herokuapp.com/api/matches/', {scouter: $rootScope.match.scouter,team: $rootScope.match.team,number: $rootScope.match.number,quadrant: $rootScope.match.quadrant,botType: $rootScope.match.botType,autonotes: $rootScope.match.autoNotes,auto: JSON.stringify($rootScope.auto),teleopnotes: $rootScope.match.teleopNotes,teleop: JSON.stringify($rootScope.teleop),totalscore: $rootScope.totalScore, defenseOne: $rootScope.match.defenseOne, defenseTwo: $rootScope.match.defenseTwo, defenseThree: $rootScope.match.defenseThree, defenseFour: $rootScope.match.defenseFour, defenseFive: $rootScope.match.defenseFive})
@@ -420,6 +422,12 @@ angular.module('starter.controllers', [])
                                                 fourthDefenseState: "button-calm", fourthDefenseLabel: "Failed",
                                                 fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"};
 
+            $rootScope.defenseOne = "Low Bar";
+            $rootScope.defenseTwo = "";
+            $rootScope.defenseThree = "";
+            $rootScope.defenseFour = "";
+            $rootScope.defenseFive = "";
+
             $rootScope.totalScore = 0;
 
             $rootScope.auto.defenseAttack = "Failed";
@@ -427,7 +435,12 @@ angular.module('starter.controllers', [])
             $rootScope.teleop.towerAttack = {towerState: "button-calm", towerLabel: "Defended"}
 
             $state.go('newmatch'); // Set state to 'newmatch'
-            console.log('Success!')
+            console.log('Success!');
+
+            var confirmPopup = $ionicPopup.alert({
+               title: 'Thank You!',
+               template: 'Match has been successfully uploaded!'
+             });
         })
 
         // Triggered code when post fails

@@ -17,7 +17,7 @@
     <div class="item item-body">
 
     <h1 class="item item-divider">
-      Boulders in Low Goal (Count: {{teleop.lowBall}})
+      Teleop Boulders in Low Goal (Count: {{teleop.lowBall}})
       <br>
       <button class="button button-positive padding button-half" ng-click="incLowBall()" style="font-size: 35px">
         +
@@ -30,7 +30,7 @@
 
 
     <h1 class="item item-divider">
-      Boulders in High Goal (Count: {{teleop.highBall}})
+      Teleop Boulders in High Goal (Count: {{teleop.highBall}})
       <br>
       <button class="button button-positive padding button-half" ng-click="incHighBall()" style="font-size: 35px">
         +
@@ -46,23 +46,23 @@
       Outer Works Attack in Teleop
     </div>
 
-    <button class="button button-block padding {{teleop.definedDefensesTeleop.firstDefenseState}}" ng-click="switchDefense(1)" style="font-size: 35px">
+    <button class="button button-block padding {{teleop.definedDefensesTeleop.firstDefenseState}}" ng-click="switchDefense(1)" style="font-size: 15px">
         {{match.defenseOne}} {{teleop.definedDefensesTeleop.firstDefenseLabel}}
     </button>
 
-    <button class="button button-block padding {{teleop.definedDefensesTeleop.secondDefenseState}}" ng-click="switchDefense(2)" style="font-size: 35px">
+    <button class="button button-block padding {{teleop.definedDefensesTeleop.secondDefenseState}}" ng-click="switchDefense(2)" style="font-size: 15px">
         {{match.defenseTwo}} {{teleop.definedDefensesTeleop.secondDefenseLabel}}
     </button>
 
-    <button class="button button-block padding {{teleop.definedDefensesTeleop.thirdDefenseState}}" ng-click="switchDefense(3)" style="font-size: 35px">
+    <button class="button button-block padding {{teleop.definedDefensesTeleop.thirdDefenseState}}" ng-click="switchDefense(3)" style="font-size: 15px">
         {{match.defenseThree}} {{teleop.definedDefensesTeleop.thirdDefenseLabel}}
     </button>
 
-    <button class="button button-block padding {{teleop.definedDefensesTeleop.fourthDefenseState}}" ng-click="switchDefense(4)" style="font-size: 35px">
+    <button class="button button-block padding {{teleop.definedDefensesTeleop.fourthDefenseState}}" ng-click="switchDefense(4)" style="font-size: 15px">
         {{match.defenseFour}} {{teleop.definedDefensesTeleop.fourthDefenseLabel}}
     </button>
 
-    <button class="button button-block padding {{teleop.definedDefensesTeleop.fifthDefenseState}}" ng-click="switchDefense(5)" style="font-size: 35px">
+    <button class="button button-block padding {{teleop.definedDefensesTeleop.fifthDefenseState}}" ng-click="switchDefense(5)" style="font-size: 15px">
         {{match.defenseFive}} {{teleop.definedDefensesTeleop.fifthDefenseLabel}}
     </button>
 
@@ -183,7 +183,7 @@
       End Game
     </div>
 
-    <button class="button button-block padding {{teleop.towerAttack.towerState}}" ng-click="switchTowerAttack()" style="font-size: 35px">
+    <button class="button button-block padding {{teleop.towerAttack.towerState}}" ng-click="switchTowerAttack()" style="font-size: 15px">
         Tower {{teleop.towerAttack.towerLabel}}
     </button>
 
