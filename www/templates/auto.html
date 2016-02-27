@@ -25,6 +25,15 @@
           <button class="button button-positive padding button-half" ng-click="decAutoLowBall()" style="font-size: 35px">
             -
           </button>
+
+          Total Shots Taken in Low Goal (Count: {{auto.lowShots}})
+          <br>
+          <button class="button button-positive padding button-half" ng-click="incAutoLowShots()" style="font-size: 35px">
+            +
+          </button>
+          <button class="button button-positive padding button-half" ng-click="decAutoLowShots()" style="font-size: 35px">
+            -
+          </button>
         </h1>
 
         <h1 class="item item-divider">
@@ -34,6 +43,15 @@
             +
           </button>
           <button class="button button-positive padding button-half" ng-click="decAutoHighBall()" style="font-size: 35px">
+            -
+          </button>
+
+          Total Shots Taken in High Goal (Count: {{auto.highShots}})
+          <br>
+          <button class="button button-positive padding button-half" ng-click="incAutoHighShots()" style="font-size: 35px">
+            +
+          </button>
+          <button class="button button-positive padding button-half" ng-click="decAutoHighShots()" style="font-size: 35px">
             -
           </button>
         </h1>

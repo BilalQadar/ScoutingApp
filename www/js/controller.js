@@ -32,10 +32,14 @@ angular.module('starter.controllers', [])
   //                     autoNotes: "", teleopNotes: "", defensiveBot: false, offensiveBot: false};
 
   // Test Match Variables
+
+  if (!$rootScope.match)
+  {
   $rootScope.match = {defenseOne: "Low Bar", defenseTwo: "", defenseThree: "",
                       defenseFour: "", defenseFive: "",
                       scouter: "", quadrant: "", team: null, number: null,
-                      autoNotes: "", teleopNotes: "", defensiveBot: false, offensiveBot: false};
+                      autoNotes: "", teleopNotes: "", botType: ""};
+                    }
 
 
   // Go to Auto Webpage
@@ -77,13 +81,20 @@ angular.module('starter.controllers', [])
 
 .controller('AutoCtrl', ['$scope', '$state', '$rootScope', '$ionicPopup', '$timeout', function($scope, $state, $rootScope, $ionicPopup, $timeout) {
 
-  $rootScope.auto = {lowBall: 0, highBall: 0, definedDefensesAuto: null};
 
+  if (!$rootScope.auto)
+  {
+  $rootScope.auto = {lowBall: 0, lowShots: 0, highBall: 0, highShots: 0, definedDefensesAuto: null};
+  }
+
+  if (!$rootScope.auto.definedDefensesAuto)
+  {
   $rootScope.auto.definedDefensesAuto = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
                                 secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
                                 thirdDefenseState: "button-calm", thirdDefenseLabel: "Failed",
                                 fourthDefenseState: "button-calm", fourthDefenseLabel: "Failed",
                                 fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"};
+                              }
 
   console.log($rootScope.auto.definedDefensesAuto);
 
@@ -145,6 +156,7 @@ angular.module('starter.controllers', [])
   // Increases the amount of boulders scored in the low goals in auto
   $scope.incAutoLowBall = function() {
     $rootScope.auto.lowBall++;
+    $rootScope.auto.lowShots++;
   }
   // Decreases the amount of boulders scored in the low goals in auto
   $scope.decAutoLowBall = function() {
@@ -155,9 +167,23 @@ angular.module('starter.controllers', [])
     }
   }
 
+  // Increases the amount of shots taken on the low goal in auto
+  $scope.incAutoLowShots = function() {
+    $rootScope.auto.lowShots++;
+  }
+  // Decreases the amount of shots taken in the low goals in auto
+  $scope.decAutoLowShots = function() {
+    // Checks to ensure that the value is >0, to avoid negative values
+    if ($rootScope.auto.lowShots>0 && $rootScope.auto.lowBall<$rootScope.auto.lowShots)
+    {
+    $rootScope.auto.lowShots--;
+    }
+  }
+
   // Increases the amount of boulders scored in the high goals in auto
   $scope.incAutoHighBall = function() {
     $rootScope.auto.highBall++;
+    $rootScope.auto.highShots++;
   }
   // Decreases the amount of boulders scored in the high goals in auto
   $scope.decAutoHighBall = function() {
@@ -168,6 +194,19 @@ angular.module('starter.controllers', [])
     }
   }
 
+  // Increases the amount of shots taken in the high goals in auto
+  $scope.incAutoHighShots = function() {
+    $rootScope.auto.highShots++;
+  }
+  // Decreases the amount of shots taken in the high goals in auto
+  $scope.decAutoHighShots = function() {
+    // Checks to ensure that the value is >0, to avoid negative values
+    if ($rootScope.auto.highShots>0 && $rootScope.auto.highBall<$rootScope.auto.highShots)
+    {
+    $rootScope.auto.highShots--;
+    }
+  }
+
 }])
 
 // Control Code for Teleop Webpage (5th)
@@ -175,15 +214,24 @@ angular.module('starter.controllers', [])
 .controller('TeleopCtrl', ['$scope', '$state', '$ionicPopup', '$rootScope', '$http', '$interval', function($scope, $state, $ionicPopup, $rootScope, $http, $interval) {
 
   // Define teleop variables
-  $rootScope.teleop = {lowBall: 0, highBall: 0, totalDamage: 0, cycleTime: 0, definedDefensesTeleop: null}
+  if (!$rootScope.teleop)
+  {
+  $rootScope.teleop = {lowBall: 0, lowShots: 0, highBall: 0, highShots: 0, totalDamage: 0, cycleTime: 0, definedDefensesTeleop: null}
+  }
 
+  if (!$rootScope.teleop.towerAttack)
+  {
   $rootScope.teleop.towerAttack = {towerState: "button-calm", towerLabel: "Defended"}
+  }
 
+  if (!$rootScope.teleop.definedDefensesTeleop)
+  {
   $rootScope.teleop.definedDefensesTeleop = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
                                       secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
                                       thirdDefenseState: "button-calm", thirdDefenseLabel: "Failed",
                                       fourthDefenseState: "button-calm", fourthDefenseLabel: "Failed",
                                       fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"}
+                                    }
 
   $scope.incTotalDamage = function() {
     $rootScope.teleop.totalDamage++;
@@ -253,6 +301,7 @@ angular.module('starter.controllers', [])
   // Increases the amount of boulders scored in the low goal in teleop
   $scope.incLowBall = function() {
     $rootScope.teleop.lowBall++;
+    $rootScope.teleop.lowShots++;
   }
   // Decreases the amount of boulders scored in the low goal in teleop
   $scope.decLowBall = function() {
@@ -266,12 +315,38 @@ angular.module('starter.controllers', [])
   // Increases the amount of boulders scored in the high goal in teleop
   $scope.incHighBall = function() {
     $rootScope.teleop.highBall++;
+    $rootScope.teleop.highShots++;
   }
   // Decreases the amount of boulders scored in the high goal in teleop
   $scope.decHighBall = function() {
     if ($rootScope.teleop.highBall>0)
     {
     $rootScope.teleop.highBall--;
+    }
+  }
+
+  // Increases the amount of shots taken in the low goal in teleop
+  $scope.incLowShots = function() {
+    $rootScope.teleop.lowShots++;
+  }
+  // Decreases the amount of shots taken in the low goal in teleop
+  $scope.decLowShots = function() {
+    // Checks to ensure that the value is >0, to avoid negative
+    if ($rootScope.teleop.lowShots>0 && $rootScope.teleop.lowBall<$rootScope.teleop.lowShots)
+    {
+    $rootScope.teleop.lowShots--;
+    }
+  }
+
+  // Increases the amount of shots taken in the high goal in teleop
+  $scope.incHighShots = function() {
+    $rootScope.teleop.highShots++;
+  }
+  // Decreases the amount of shots taken in the high goal in teleop
+  $scope.decHighShots = function() {
+    if ($rootScope.teleop.highShots>0 && $rootScope.teleop.highBall<$rootScope.teleop.highShots)
+    {
+    $rootScope.teleop.highShots--;
     }
   }
 
@@ -345,23 +420,6 @@ angular.module('starter.controllers', [])
          teleopScore += $rootScope.teleop.totalDamage * 5;
 
          $rootScope.totalScore = autoScore + teleopScore;
-
-         // Logic to define additional variables
-
-         $rootScope.match.botType = "No input";
-
-         if ($rootScope.match.defensiveBot && $rootScope.match.offensiveBot)
-         {
-           $rootScope.match.botType = "Hybrid";
-         }
-         else if ($rootScope.match.defensiveBot)
-         {
-           $rootScope.match.botType = "Defensive";
-         }
-         else if ($rootScope.match.offensiveBot)
-         {
-           $rootScope.match.botType = "Offensive";
-         }
 
          $state.go('upload'); // Change state to 'upload'
 

@@ -36,30 +36,16 @@
 
     <br>
 
-    <div class="item item-divider">
-      Robot
-    </div>
-
-    <li class="item item-toggle">
-       Defensive Robot
-       <label class="toggle toggle-balanced">
-         <input type="checkbox" ng-model ="match.defensiveBot">
-         <div class="track">
-           <div class="handle"></div>
-         </div>
-       </label>
-    </li>
-
-
-    <li class="item item-toggle">
-       Offensive Robot
-       <label class="toggle toggle-balanced">
-         <input type="checkbox" ng-model="match.offensiveBot">
-         <div class="track">
-           <div class="handle"></div>
-         </div>
-       </label>
-    </li>
+    <div class="item item-input item-select">
+        <div class="input-label">
+          Robot Starting Position
+        </div>
+        <select ng-model="match.botType">
+          <option>Courtyard</option>
+          <option>Auto Zone</option>
+          <option>Spy Start</option>
+        </select>
+      </div>
 
     <br>
 
