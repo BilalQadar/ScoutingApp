@@ -156,7 +156,10 @@ angular.module('starter.controllers', [])
   // Increases the amount of boulders scored in the low goals in auto
   $scope.incAutoLowBall = function() {
     $rootScope.auto.lowBall++;
-    $rootScope.auto.lowShots++;
+    if ($rootScope.auto.lowBall>$rootScope.auto.lowShots)
+    {
+      $rootScope.auto.lowShots = $rootScope.auto.lowBall;
+    }
   }
   // Decreases the amount of boulders scored in the low goals in auto
   $scope.decAutoLowBall = function() {
@@ -183,7 +186,10 @@ angular.module('starter.controllers', [])
   // Increases the amount of boulders scored in the high goals in auto
   $scope.incAutoHighBall = function() {
     $rootScope.auto.highBall++;
-    $rootScope.auto.highShots++;
+    if ($rootScope.auto.highBall>$rootScope.auto.highShots)
+    {
+      $rootScope.auto.highShots = $rootScope.auto.highBall;
+    }
   }
   // Decreases the amount of boulders scored in the high goals in auto
   $scope.decAutoHighBall = function() {
@@ -301,7 +307,10 @@ angular.module('starter.controllers', [])
   // Increases the amount of boulders scored in the low goal in teleop
   $scope.incLowBall = function() {
     $rootScope.teleop.lowBall++;
-    $rootScope.teleop.lowShots++;
+    if ($rootScope.teleop.lowBall>$rootScope.teleop.lowShots)
+    {
+      $rootScope.teleop.lowShots = $rootScope.teleop.lowBall;
+    }
   }
   // Decreases the amount of boulders scored in the low goal in teleop
   $scope.decLowBall = function() {
@@ -315,7 +324,10 @@ angular.module('starter.controllers', [])
   // Increases the amount of boulders scored in the high goal in teleop
   $scope.incHighBall = function() {
     $rootScope.teleop.highBall++;
-    $rootScope.teleop.highShots++;
+    if ($rootScope.teleop.highBall>$rootScope.teleop.highShots)
+    {
+      $rootScope.teleop.highShots = $rootScope.teleop.highBall;
+    }
   }
   // Decreases the amount of boulders scored in the high goal in teleop
   $scope.decHighBall = function() {
@@ -465,6 +477,8 @@ angular.module('starter.controllers', [])
             $rootScope.auto.speed = 0;
             $rootScope.auto.lowBall = 0;
             $rootScope.auto.highBall = 0;
+            $rootScope.auto.lowShots = 0;
+            $rootScope.auto.highShots = 0;
             $rootScope.auto.definedDefensesAuto = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
                                           secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
                                           thirdDefenseState: "button-calm", thirdDefenseLabel: "Failed",
@@ -472,6 +486,8 @@ angular.module('starter.controllers', [])
                                           fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"};
             $rootScope.teleop.lowBall = 0;
             $rootScope.teleop.highBall = 0;
+            $rootScope.teleop.lowShots = 0;
+            $rootScope.teleop.highShots = 0;
             $rootScope.teleop.totalDamage = 0;
             $rootScope.teleop.cycleTime = 0;
             $rootScope.teleop.definedDefensesTeleop = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
