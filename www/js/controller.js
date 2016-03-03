@@ -57,16 +57,9 @@ angular.module('starter.controllers', [])
         $rootScope.match.team == null || $rootScope.match.number == null)
     {
       // If empty, stop the user from proceeding
-      var confirmPopup = $ionicPopup.confirm({
+      var confirmPopup = $ionicPopup.alert({
          title: 'Error',
          template: 'Fill out ALL of the fields to proceed.'
-       });
-       confirmPopup.then(function(res) {
-         if(res) {
-           console.log('You are sure');
-         } else {
-           console.log('You are not sure');
-         }
        });
     }
     else {
@@ -470,8 +463,7 @@ angular.module('starter.controllers', [])
             $rootScope.uploaded = "Previous match was uploaded. Thank you!";
             $rootScope.match.number = $rootScope.match.number + 1; // Increases the current match number by 1
             $rootScope.match.team = null;
-            $rootScope.match.defensiveBot = false;
-            $rootScope.match.offensiveBot = false;
+            $rootScope.match.botType = "";
             $rootScope.match.autoNotes = "";
             $rootScope.match.teleopNotes = "";
             $rootScope.auto.speed = 0;
@@ -505,7 +497,6 @@ angular.module('starter.controllers', [])
             $rootScope.totalScore = 0;
 
             $rootScope.auto.defenseAttack = "Failed";
-            $rootScope.match.botType = "No input";
             $rootScope.teleop.towerAttack = {towerState: "button-calm", towerLabel: "Defended"}
 
             $state.go('newmatch'); // Set state to 'newmatch'
