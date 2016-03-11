@@ -90,6 +90,8 @@ angular.module('starter.controllers', [])
 
   $scope.upload = function() {
 
+    $scope.matches = $rootScope.matches;
+
     if (window.localStorage['count']>0)
     {
       console.log ("Uploading...");
