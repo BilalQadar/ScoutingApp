@@ -153,6 +153,15 @@ angular.module('starter.controllers', [])
             }
             done = false;
           }
+
+          $scope.showUploader = true;
+
+          var confirmPopup = $ionicPopup.alert({
+            title: 'Thank You!',
+            template: 'Matches have been successfully uploaded!'
+          });
+          
+
           console.log('Success!');
 
         })
@@ -166,6 +175,7 @@ angular.module('starter.controllers', [])
               title: 'Error!',
               template: 'Upload Failed! (Ensure you have internet connection)'
             });
+            done2 = false;
           }
 
         });
@@ -177,15 +187,10 @@ angular.module('starter.controllers', [])
 
     console.log("Continuing...");
 
-        $scope.showUploader = true;
 
-        if (available){
-          var confirmPopup = $ionicPopup.alert({
-            title: 'Thank You!',
-            template: 'Matches have been successfully uploaded!'
-          });
-        }
-        else
+
+
+        if (!available)
         {
           var confirmPopup = $ionicPopup.alert({
             title: 'No Matches',
