@@ -160,7 +160,7 @@ angular.module('starter.controllers', [])
             title: 'Thank You!',
             template: 'Matches have been successfully uploaded!'
           });
-          
+
 
           console.log('Success!');
 
@@ -178,17 +178,14 @@ angular.module('starter.controllers', [])
             done2 = false;
           }
 
+          $scope.showUploader = true;
+
         });
 
 
       }
 
     }
-
-    console.log("Continuing...");
-
-
-
 
         if (!available)
         {
