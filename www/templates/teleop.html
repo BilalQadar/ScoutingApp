@@ -1,20 +1,73 @@
-<ion-view view-title="Teleop">
+<ion-view view-title="Teleop {{match.team}}">
 
   <ion-nav-buttons side="left">
     <button class="button" ng-click="teleopBack()">
-      Back (Auto)
+      Auto
     </button>
   </ion-nav-buttons>
 
   <ion-nav-buttons side="right">
     <button class="button" ng-click="upload()">
-      Next (Upload)
+      Save
     </button>
   </ion-nav-buttons>
 
   <ion-content class="padding">
 
     <div class="item item-body">
+
+      <div class ="item item-divider">
+        Outer Works Attack in Teleop
+      </div>
+
+      <button class="button button-block padding {{teleop.definedDefensesTeleop.firstDefenseState}}" ng-click="switchDefense(1)" style="font-size: 15px">
+          {{match.defenseOne}} {{teleop.definedDefensesTeleop.firstDefenseLabel}}
+      </button>
+
+      <button class="button button-block padding {{teleop.definedDefensesTeleop.secondDefenseState}}" ng-click="switchDefense(2)" style="font-size: 15px">
+          {{match.defenseTwo}} {{teleop.definedDefensesTeleop.secondDefenseLabel}}
+      </button>
+
+      <button class="button button-block padding {{teleop.definedDefensesTeleop.thirdDefenseState}}" ng-click="switchDefense(3)" style="font-size: 15px">
+          {{match.defenseThree}} {{teleop.definedDefensesTeleop.thirdDefenseLabel}}
+      </button>
+
+      <button class="button button-block padding {{teleop.definedDefensesTeleop.fourthDefenseState}}" ng-click="switchDefense(4)" style="font-size: 15px">
+          {{match.defenseFour}} {{teleop.definedDefensesTeleop.fourthDefenseLabel}}
+      </button>
+
+      <button class="button button-block padding {{teleop.definedDefensesTeleop.fifthDefenseState}}" ng-click="switchDefense(5)" style="font-size: 15px">
+          {{match.defenseFive}} {{teleop.definedDefensesTeleop.fifthDefenseLabel}}
+      </button>
+
+      <h1 class="item item-divider">
+        Damage to Defenses in Auto and Teleop (Count: {{teleop.totalDamage}})
+        <br>
+        <button class="button button-positive padding button-half" ng-click="incTotalDamage()" style="font-size: 35px">
+          +
+        </button>
+        <button class="button button-positive padding button-half" ng-click="decTotalDamage()" style="font-size: 35px">
+          -
+        </button>
+      </h1>
+
+      </div>
+
+      <br>
+
+      <div class="item item-divider">
+        Cycle Time
+      </div>
+
+      <h2 style="margin-left: 20px; font-size: 200%"> {{teleop.cycleTime / 100}} </h2>
+
+      <button class="button button-clear button-positive" ng-click="startCycleTimer()">
+        {{teleop.cycleTimeToggle}}
+      </button>
+
+      <button class="button button-clear button-positive" ng-click="resetCycleTimer()">
+        Reset
+      </button>
 
     <h1 class="item item-divider">
       Teleop Boulders in Low Goal (Count: {{teleop.lowBall}})
@@ -26,6 +79,7 @@
         -
       </button>
 
+      <br>
       Teleop Shots Taken in Low Goal (Count: {{teleop.lowShots}})
       <br>
       <button class="button button-positive padding button-half" ng-click="incLowShots()" style="font-size: 35px">
@@ -48,6 +102,7 @@
         -
       </button>
 
+      <br>
       Teleop Shots Taken in High Goal (Count: {{teleop.highShots}})
       <br>
       <button class="button button-positive padding button-half" ng-click="incHighShots()" style="font-size: 35px">
@@ -57,61 +112,6 @@
         -
       </button>
     </h1>
-
-
-
-    <div class ="item item-divider">
-      Outer Works Attack in Teleop
-    </div>
-
-    <button class="button button-block padding {{teleop.definedDefensesTeleop.firstDefenseState}}" ng-click="switchDefense(1)" style="font-size: 15px">
-        {{match.defenseOne}} {{teleop.definedDefensesTeleop.firstDefenseLabel}}
-    </button>
-
-    <button class="button button-block padding {{teleop.definedDefensesTeleop.secondDefenseState}}" ng-click="switchDefense(2)" style="font-size: 15px">
-        {{match.defenseTwo}} {{teleop.definedDefensesTeleop.secondDefenseLabel}}
-    </button>
-
-    <button class="button button-block padding {{teleop.definedDefensesTeleop.thirdDefenseState}}" ng-click="switchDefense(3)" style="font-size: 15px">
-        {{match.defenseThree}} {{teleop.definedDefensesTeleop.thirdDefenseLabel}}
-    </button>
-
-    <button class="button button-block padding {{teleop.definedDefensesTeleop.fourthDefenseState}}" ng-click="switchDefense(4)" style="font-size: 15px">
-        {{match.defenseFour}} {{teleop.definedDefensesTeleop.fourthDefenseLabel}}
-    </button>
-
-    <button class="button button-block padding {{teleop.definedDefensesTeleop.fifthDefenseState}}" ng-click="switchDefense(5)" style="font-size: 15px">
-        {{match.defenseFive}} {{teleop.definedDefensesTeleop.fifthDefenseLabel}}
-    </button>
-
-    <h1 class="item item-divider">
-      Total Damage Dealt to Outer Works (Count: {{teleop.totalDamage}})
-      <br>
-      <button class="button button-positive padding button-half" ng-click="incTotalDamage()" style="font-size: 35px">
-        +
-      </button>
-      <button class="button button-positive padding button-half" ng-click="decTotalDamage()" style="font-size: 35px">
-        -
-      </button>
-    </h1>
-
-    </div>
-
-    <br>
-
-    <div class="item item-divider">
-      Cycle Time
-    </div>
-
-    <h2 style="margin-left: 20px; font-size: 200%"> {{teleop.cycleTime / 100}} </h2>
-
-    <button class="button button-clear button-positive" ng-click="startCycleTimer()">
-      {{teleop.cycleTimeToggle}}
-    </button>
-
-    <button class="button button-clear button-positive" ng-click="resetCycleTimer()">
-      Reset
-    </button>
 
 
     <!-- <div ng-repeat="attempt in defenseAttempts track by $index">

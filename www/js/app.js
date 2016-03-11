@@ -18,10 +18,7 @@ angular.module('starter', ['ionic','starter.controllers', 'firebase'])
 
   });
 
-  $rootScope.uploaded = "";
-
-  $window.localStorage['matches'] = JSON.stringify([]);
-  $window.localStorage['autos'] = JSON.stringify([]);
+  window.localStorage['count'] = 0;
 
 })
 
@@ -75,6 +72,20 @@ angular.module('starter', ['ionic','starter.controllers', 'firebase'])
                                 templateUrl: 'templates/upload.html',
                                 controller: 'UploadCtrl'
                             })
+
+                          $stateProvider
+                               .state('menu', {
+                                   url: '/menu',
+                                   templateUrl: 'templates/menu.html',
+                                   controller: 'MenuCtrl'
+                               })
+
+                            $stateProvider
+                                .state('storage', {
+                                    url: '/storage',
+                                    templateUrl: 'templates/storage.html',
+                                    controller: 'StorageCtrl'
+                                })
 
 
     // defaults URL/state to the splash screen (first screen)

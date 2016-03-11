@@ -1,20 +1,44 @@
-<ion-view title="Auto" hide-nav-bar="false">
+<ion-view title="Auto {{match.team}}" hide-nav-bar="false">
 
   <ion-nav-buttons side="left">
     <button class="button" ng-click="autoBack()">
-      Back (Match)
+      Match
     </button>
   </ion-nav-buttons>
 
   <ion-nav-buttons side="right">
     <button class="button" ng-click="teleop()">
-      Next (Teleop)
+      Teleop
     </button>
   </ion-nav-buttons>
 
   <ion-content class="padding">
 
       <div class="item item-body">
+
+        <div class ="item item-divider">
+          Outer Works Attack in Auto
+        </div>
+
+        <button class="button button-block padding {{auto.definedDefensesAuto.firstDefenseState}}" ng-click="switchDefense(1)" style="font-size: 15px">
+            {{match.defenseOne}} {{auto.definedDefensesAuto.firstDefenseLabel}}
+        </button>
+
+        <button class="button button-block padding {{auto.definedDefensesAuto.secondDefenseState}}" ng-click="switchDefense(2)" style="font-size: 15px">
+            {{match.defenseTwo}} {{auto.definedDefensesAuto.secondDefenseLabel}}
+        </button>
+
+        <button class="button button-block padding {{auto.definedDefensesAuto.thirdDefenseState}}" ng-click="switchDefense(3)" style="font-size: 15px">
+            {{match.defenseThree}} {{auto.definedDefensesAuto.thirdDefenseLabel}}
+        </button>
+
+        <button class="button button-block padding {{auto.definedDefensesAuto.fourthDefenseState}}" ng-click="switchDefense(4)" style="font-size: 15px">
+            {{match.defenseFour}} {{auto.definedDefensesAuto.fourthDefenseLabel}}
+        </button>
+
+        <button class="button button-block padding {{auto.definedDefensesAuto.fifthDefenseState}}" ng-click="switchDefense(5)" style="font-size: 15px">
+            {{match.defenseFive}} {{auto.definedDefensesAuto.fifthDefenseLabel}}
+        </button>
 
         <h1 class="item item-divider">
           Auto Boulders in Low Goal (Count: {{auto.lowBall}})
@@ -55,30 +79,6 @@
             -
           </button>
         </h1>
-
-        <div class ="item item-divider">
-          Outer Works Attack in Auto
-        </div>
-
-        <button class="button button-block padding {{auto.definedDefensesAuto.firstDefenseState}}" ng-click="switchDefense(1)" style="font-size: 15px">
-            {{match.defenseOne}} {{auto.definedDefensesAuto.firstDefenseLabel}}
-        </button>
-
-        <button class="button button-block padding {{auto.definedDefensesAuto.secondDefenseState}}" ng-click="switchDefense(2)" style="font-size: 15px">
-            {{match.defenseTwo}} {{auto.definedDefensesAuto.secondDefenseLabel}}
-        </button>
-
-        <button class="button button-block padding {{auto.definedDefensesAuto.thirdDefenseState}}" ng-click="switchDefense(3)" style="font-size: 15px">
-            {{match.defenseThree}} {{auto.definedDefensesAuto.thirdDefenseLabel}}
-        </button>
-
-        <button class="button button-block padding {{auto.definedDefensesAuto.fourthDefenseState}}" ng-click="switchDefense(4)" style="font-size: 15px">
-            {{match.defenseFour}} {{auto.definedDefensesAuto.fourthDefenseLabel}}
-        </button>
-
-        <button class="button button-block padding {{auto.definedDefensesAuto.fifthDefenseState}}" ng-click="switchDefense(5)" style="font-size: 15px">
-            {{match.defenseFive}} {{auto.definedDefensesAuto.fifthDefenseLabel}}
-        </button>
 
         <h2 class="item item-input">
           <span class="input-label">Auto Notes</span>

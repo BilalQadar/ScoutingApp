@@ -1,18 +1,45 @@
-<ion-view title="Save Match" hide-nav-bar="false">
+<ion-view title="Save {{match.team}}" hide-nav-bar="false">
   <ion-nav-buttons side="left">
-    <button class="button" ng-click="returnTeleop()">
-      Back (Teleop)
+    <button ng-show="showUploader" class="button" ng-click="returnTeleop()">
+      Teleop
+    </button>
+  </ion-nav-buttons>
+
+  <ion-nav-buttons side="right">
+    <button ng-show="showUploader" class="button" ng-click="menu()">
+      Menu
     </button>
   </ion-nav-buttons>
 
   <ion-content class="padding"  style="text-align: center;">
 
-    <button class="button button-outline button-calm" ng-click="upload()">
-      Upload to the cloud <br> (Internet Access Required)
-    </button>
+    <!-- <div ng-show="showUploader">
+      <button class="button button-outline button-calm" ng-click="upload()">
+        Upload to the cloud <br> (Internet Access Required)
+      </button>
+    </div>
+
+    <div ng-show="!showUploader">
+      <label style="font-size: 20px">
+        {{uploading}}
+      </label>
+    </div> -->
+
+    <div ng-show="showSaver">
+      <button class="button button-outline button-calm" ng-click="save()">
+        Save to Local Storage
+      </button>
+    </div>
+
+    <div ng-show="!showSaver">
+      <label style="font-size: 20px">
+        {{saving}}
+      </label>
+    </div>
+
+    <br>
 
     <div>
-      <br>
       <h3 class="text" style="color:black">
         Total Team Score Contribution: {{totalScore}}
       </h3>

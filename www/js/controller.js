@@ -17,7 +17,203 @@ angular.module('starter.controllers', [])
 
   // Go to NewMatch Webpage
   $scope.next = function () {
+    $state.go('menu'); // Sets state to 'menu'
+  };
+
+}])
+
+// Control Code for the Menu
+
+.controller('MenuCtrl', ['$scope', '$state', '$rootScope', '$http', '$window', '$ionicPopup', '$interval', function($scope, $state, $rootScope, $http, $window, $ionicPopup, $interval) {
+
+  // Go to NewMatch Webpage
+  $scope.newmatch = function () {
     $state.go('newmatch'); // Sets state to 'newmatch'
+  };
+
+  $scope.storage = function () {
+
+    $rootScope.matches = [];
+
+    for (count = 1; count<= window.localStorage['count']; count++)
+    {
+      $rootScope.matches.push(JSON.parse(window.localStorage['match' + count]));
+
+      $rootScope.matches[(count-1)].completed = window.localStorage['check' + count];
+    }
+
+    console.log("Matches Array: " + JSON.stringify($rootScope.matches));
+
+
+    $state.go('storage'); // Sets state to 'storage'
+  };
+
+}])
+
+.controller('StorageCtrl', ['$scope', '$state', '$rootScope', '$http', '$window', '$ionicPopup', '$interval', function($scope, $state, $rootScope, $http, $window, $ionicPopup, $interval) {
+
+  $scope.matches = $rootScope.matches;
+
+  // Go to NewMatch Webpage
+  $scope.menu = function () {
+    $state.go('menu'); // Sets state to 'menu'
+  };
+
+  $scope.refresh = function () {
+    $scope.matches = $rootScope.matches;
+  };
+
+  $scope.showRaw = function (theIndex) {
+
+    var confirmPopup = $ionicPopup.alert({
+       title: 'Raw Data',
+       template: JSON.stringify($scope.matches[theIndex])
+     });
+
+  };
+
+  $scope.showUploader = true;
+
+  $scope.uploading = "Uploading Matches";
+  $rootScope.uploadInterval = $interval(function(){
+
+    if ($scope.uploading == "Uploading Matches...")
+    {
+      $scope.uploading = "Uploading Matches";
+    }
+    else
+    {
+      $scope.uploading += ".";
+    }
+
+  },500,0);
+
+  $scope.upload = function() {
+
+    if (window.localStorage['count']>0)
+    {
+      console.log ("Uploading...");
+
+
+
+    var confirmPopup = $ionicPopup.confirm({
+       title: 'Upload',
+       template: 'Are you sure you want to upload all the matches?'
+     });
+     // Triggered code when popup is confirmed
+     confirmPopup.then(function(res) {
+       if(res) {
+
+         $scope.showUploader = false;
+
+         var available = false;
+         var done = true;
+         var done2 = true;
+
+    for (upCount = 1; upCount<=window.localStorage['count']; upCount++) {
+
+      if ($scope.matches[(upCount-1)].completed == "No")
+      {
+
+        console.log ("Post: " + upCount);
+        available = true;
+
+
+    // Posts information to the scouting URL
+    $http.post('http://scoutingserver.herokuapp.com/api/matches/', {
+      scouter: $scope.matches[(upCount-1)].scouter,
+      team: $scope.matches[(upCount-1)].team,
+      number: $scope.matches[(upCount-1)].number,
+      quadrant: $scope.matches[(upCount-1)].quadrant,
+      botType: $scope.matches[(upCount-1)].botType,
+      autonotes: $scope.matches[(upCount-1)].autonotes,
+      auto: $scope.matches[(upCount-1)].auto,
+      teleopnotes: $scope.matches[(upCount-1)].teleopnotes,
+      teleop: $scope.matches[(upCount-1)].teleop,
+      totalscore: $scope.matches[(upCount-1)].totalscore,
+      defenseOne: $scope.matches[(upCount-1)].defenseOne,
+      defenseTwo: $scope.matches[(upCount-1)].defenseTwo,
+      defenseThree: $scope.matches[(upCount-1)].defenseThree,
+      defenseFour: $scope.matches[(upCount-1)].defenseFour,
+      defenseFive: $scope.matches[(upCount-1)].defenseFive})
+
+        // Triggered code when post is a success
+        .success(function(data) {
+
+          if (done)
+          {
+            for (newCount = 1; newCount<=window.localStorage['count']; newCount++)
+            {
+              if ($scope.matches[(newCount-1)].completed == "No")
+              {
+                window.localStorage['check' + newCount] = "Yes";
+                console.log(window.localStorage['check' + newCount]);
+                $scope.matches[(newCount-1)].completed = window.localStorage['check' + newCount];
+              }
+            }
+            done = false;
+          }
+          console.log('Success!');
+
+        })
+
+        // Triggered code when post fails
+        .error(function(data) {
+
+          if (done2)
+          {
+            var confirmPopup = $ionicPopup.alert({
+              title: 'Error!',
+              template: 'Upload Failed! (Ensure you have internet connection)'
+            });
+          }
+
+        });
+
+
+      }
+
+    }
+
+    console.log("Continuing...");
+
+        $scope.showUploader = true;
+
+        if (available){
+          var confirmPopup = $ionicPopup.alert({
+            title: 'Thank You!',
+            template: 'Matches have been successfully uploaded!'
+          });
+        }
+        else
+        {
+          var confirmPopup = $ionicPopup.alert({
+            title: 'No Matches',
+            template: 'No new matches to upload!'
+          });
+        }
+
+
+      }
+      else {
+        console.log('You are not sure');
+        $scope.showUploader = true;
+      }
+
+    });
+
+
+
+    }
+    else
+    {
+      var confirmPopup = $ionicPopup.alert({
+        title: 'No Matches',
+        template: 'No matches available!'
+      });
+    }
+
+
   };
 
 }])
@@ -41,6 +237,12 @@ angular.module('starter.controllers', [])
                       autoNotes: "", teleopNotes: "", botType: ""};
                     }
 
+
+  $scope.menu = function() {
+
+    $state.go('menu');
+
+  }
 
   // Go to Auto Webpage
   $scope.auto = function() {
@@ -88,8 +290,6 @@ angular.module('starter.controllers', [])
                                 fourthDefenseState: "button-calm", fourthDefenseLabel: "Failed",
                                 fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"};
                               }
-
-  console.log($rootScope.auto.definedDefensesAuto);
 
   $scope.switchDefense = function(defenseNo) {
 
@@ -380,16 +580,8 @@ angular.module('starter.controllers', [])
 
   // Proceed to the Upload Webpage
   $scope.upload = function() {
-    // Popup to confirm if the user wants to proceed
-    var confirmPopup = $ionicPopup.confirm({
-       title: 'Upload',
-       template: 'Are you sure you want to upload the match? Double check that all your information is accurate.'
-     });
-     // Triggered code when popup is confirmed
-     confirmPopup.then(function(res) {
-       if(res) {
 
-         // Calculating Algothirthm for the Total Score Contribution
+         // Calculating Algorithm for the Total Score Contribution
 
          var autoScore = 0;
          autoScore += ($rootScope.auto.lowBall*5) + ($rootScope.auto.highBall*10);
@@ -399,7 +591,7 @@ angular.module('starter.controllers', [])
              $rootScope.auto.definedDefensesAuto.fourthDefenseLabel == "Crossed" ||
              $rootScope.auto.definedDefensesAuto.fifthDefenseLabel == "Crossed")
          {
-           autoScore += 10;
+           autoScore += 5; // with another 5 from damage dealt
          }
          else if ($rootScope.auto.definedDefensesAuto.firstDefenseLabel == "Reached" ||
                  $rootScope.auto.definedDefensesAuto.secondDefenseLabel == "Reached" ||
@@ -413,11 +605,11 @@ angular.module('starter.controllers', [])
          var teleopScore = 0;
          teleopScore += ($rootScope.teleop.lowBall*2) + ($rootScope.teleop.highBall*5);
 
-         if ($rootScope.teleop.scale)
+         if ($rootScope.teleop.towerAttack.towerLabel == "Scaled")
          {
            teleopScore += 15;
          }
-         else if ($rootScope.teleop.challenge)
+         else if ($rootScope.teleop.towerAttack.towerLabel == "Challenged")
          {
            teleopScore += 5;
          }
@@ -428,12 +620,7 @@ angular.module('starter.controllers', [])
 
          $state.go('upload'); // Change state to 'upload'
 
-         console.log('You are sure');
-       } else {
-         console.log('You are not sure');
        }
-     });
-   };
 
    // Return to the Teleop Webpage
    $scope.teleopBack = function() {
@@ -444,86 +631,120 @@ angular.module('starter.controllers', [])
 
 // Control Code for the Upload (6th) Webpage
 
-.controller('UploadCtrl', ['$scope', '$state', '$rootScope', '$http', '$window', '$ionicPopup', function($scope, $state, $rootScope, $http, $window, $ionicPopup) {
-
-  // Uploads the information to the scouting server
-
-  $scope.upload = function() {
-
-    var confirmPopup = $ionicPopup.alert({
-       title: 'Loading',
-       template: 'Please Wait...'
-     });
-
-    // Posts information to the scouting URL
-    $http.post('http://scoutingserver.herokuapp.com/api/matches/', {scouter: $rootScope.match.scouter,team: $rootScope.match.team,number: $rootScope.match.number,quadrant: $rootScope.match.quadrant,botType: $rootScope.match.botType,autonotes: $rootScope.match.autoNotes,auto: JSON.stringify($rootScope.auto),teleopnotes: $rootScope.match.teleopNotes,teleop: JSON.stringify($rootScope.teleop),totalscore: $rootScope.totalScore, defenseOne: $rootScope.match.defenseOne, defenseTwo: $rootScope.match.defenseTwo, defenseThree: $rootScope.match.defenseThree, defenseFour: $rootScope.match.defenseFour, defenseFive: $rootScope.match.defenseFive})
-
-        // Triggered code when post is a success
-        .success(function(data) {
-            $rootScope.uploaded = "Previous match was uploaded. Thank you!";
-            $rootScope.match.number = $rootScope.match.number + 1; // Increases the current match number by 1
-            $rootScope.match.team = null;
-            $rootScope.match.botType = "";
-            $rootScope.match.autoNotes = "";
-            $rootScope.match.teleopNotes = "";
-            $rootScope.auto.speed = 0;
-            $rootScope.auto.lowBall = 0;
-            $rootScope.auto.highBall = 0;
-            $rootScope.auto.lowShots = 0;
-            $rootScope.auto.highShots = 0;
-            $rootScope.auto.definedDefensesAuto = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
-                                          secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
-                                          thirdDefenseState: "button-calm", thirdDefenseLabel: "Failed",
-                                          fourthDefenseState: "button-calm", fourthDefenseLabel: "Failed",
-                                          fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"};
-            $rootScope.teleop.lowBall = 0;
-            $rootScope.teleop.highBall = 0;
-            $rootScope.teleop.lowShots = 0;
-            $rootScope.teleop.highShots = 0;
-            $rootScope.teleop.totalDamage = 0;
-            $rootScope.teleop.cycleTime = 0;
-            $rootScope.teleop.definedDefensesTeleop = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
-                                                secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
-                                                thirdDefenseState: "button-calm", thirdDefenseLabel: "Failed",
-                                                fourthDefenseState: "button-calm", fourthDefenseLabel: "Failed",
-                                                fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"};
-
-            $rootScope.defenseOne = "Low Bar";
-            $rootScope.defenseTwo = "";
-            $rootScope.defenseThree = "";
-            $rootScope.defenseFour = "";
-            $rootScope.defenseFive = "";
-
-            $rootScope.totalScore = 0;
-
-            $rootScope.auto.defenseAttack = "Failed";
-            $rootScope.teleop.towerAttack = {towerState: "button-calm", towerLabel: "Defended"}
-
-            $state.go('newmatch'); // Set state to 'newmatch'
-            console.log('Success!');
-
-            var confirmPopup = $ionicPopup.alert({
-               title: 'Thank You!',
-               template: 'Match has been successfully uploaded!'
-             });
-        })
-
-        // Triggered code when post fails
-        .error(function(data) {
-            $rootScope.uploaded = "Error...!";
-            console.log('Error!');
-            // Alert user that upload failed
-            var confirmPopup = $ionicPopup.alert({
-               title: 'Error!',
-               template: 'Error! Please try again (Ensure that you have internet access).'
-             });
-
-        }
-    );
+.controller('UploadCtrl', ['$scope', '$state', '$rootScope', '$http', '$window', '$ionicPopup', '$interval', function($scope, $state, $rootScope, $http, $window, $ionicPopup, $interval) {
 
 
 
-  };
+  $scope.showSaver = true;
+
+  $scope.saving = "Uploading Report";
+
+  $rootScope.saveInterval = $interval(function(){
+
+    if ($scope.saving == "Uploading Report...")
+    {
+      $scope.saving = "Uploading Report";
+    }
+    else
+    {
+      $scope.saving += ".";
+    }
+
+  },500,0);
+
+  $scope.menu = function(){
+
+    $state.go('menu');
+
+  }
+
+  $scope.save = function(){
+
+    $scope.showUploader = false;
+
+      var confirmPopup = $ionicPopup.confirm({
+         title: 'Save',
+         template: 'Are you sure you want to save the match? Double check that all your information is accurate.'
+       });
+       // Triggered code when popup is confirmed
+       confirmPopup.then(function(res) {
+         if(res) {
+
+           var theMatch = {scouter: $rootScope.match.scouter,
+                           team: $rootScope.match.team,
+                           number: $rootScope.match.number,
+                           quadrant: $rootScope.match.quadrant,
+                           botType: $rootScope.match.botType,
+                           autonotes: $rootScope.match.autoNotes,
+                           auto: JSON.stringify($rootScope.auto),
+                           teleopnotes: $rootScope.match.teleopNotes,
+                           teleop: JSON.stringify($rootScope.teleop),
+                           totalscore: $rootScope.totalScore,
+                           defenseOne: $rootScope.match.defenseOne,
+                           defenseTwo: $rootScope.match.defenseTwo,
+                           defenseThree: $rootScope.match.defenseThree,
+                           defenseFour: $rootScope.match.defenseFour,
+                           defenseFive: $rootScope.match.defenseFive};
+
+           window.localStorage['count']++;
+           window.localStorage['match' + window.localStorage['count']] = JSON.stringify(theMatch);
+           window.localStorage['check' + window.localStorage['count']] = "No";
+
+           console.log("Storage Count: " + window.localStorage['count']);
+           console.log("Match Stored: " + window.localStorage['match' + window.localStorage['count']]);
+
+                     $rootScope.uploaded = "Previous match was uploaded. Thank you!";
+                     $rootScope.match.number = $rootScope.match.number + 1; // Increases the current match number by 1
+                     $rootScope.match.team = null;
+                     $rootScope.match.autoNotes = "";
+                     $rootScope.match.teleopNotes = "";
+                     $rootScope.auto.lowBall = 0;
+                     $rootScope.auto.highBall = 0;
+                     $rootScope.auto.lowShots = 0;
+                     $rootScope.auto.highShots = 0;
+                     $rootScope.auto.definedDefensesAuto = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
+                                                   secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
+                                                   thirdDefenseState: "button-calm", thirdDefenseLabel: "Failed",
+                                                   fourthDefenseState: "button-calm", fourthDefenseLabel: "Failed",
+                                                   fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"};
+                     $rootScope.teleop.lowBall = 0;
+                     $rootScope.teleop.highBall = 0;
+                     $rootScope.teleop.lowShots = 0;
+                     $rootScope.teleop.highShots = 0;
+                     $rootScope.teleop.totalDamage = 0;
+                     $rootScope.teleop.cycleTime = 0;
+                     $rootScope.teleop.definedDefensesTeleop = {firstDefenseState: "button-calm", firstDefenseLabel: "Failed",
+                                                         secondDefenseState: "button-calm", secondDefenseLabel: "Failed",
+                                                         thirdDefenseState: "button-calm", thirdDefenseLabel: "Failed",
+                                                         fourthDefenseState: "button-calm", fourthDefenseLabel: "Failed",
+                                                         fifthDefenseState: "button-calm", fifthDefenseLabel: "Failed"};
+
+                     $rootScope.defenseOne = "Low Bar";
+                     $rootScope.defenseTwo = "";
+                     $rootScope.defenseThree = "";
+                     $rootScope.defenseFour = "";
+                     $rootScope.defenseFive = "";
+
+                     $rootScope.totalScore = 0;
+
+                     $rootScope.auto.defenseAttack = "Failed";
+                     $rootScope.teleop.towerAttack = {towerState: "button-calm", towerLabel: "Defended"}
+
+           $scope.showUploader = true;
+           $state.go('newmatch');
+
+         }
+         else {
+           console.log('You are not sure');
+           $scope.showUploader = true;
+         }
+
+
+       });
+
+  }
+
+
 
   // Returns to the Teleop Webpage
   $scope.returnTeleop = function() {
