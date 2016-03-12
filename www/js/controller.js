@@ -153,16 +153,14 @@ angular.module('starter.controllers', [])
                 $scope.matches[(newCount-1)].completed = window.localStorage['check' + newCount];
               }
             }
+            $scope.showUploader = true;
+
+            var confirmPopup = $ionicPopup.alert({
+              title: 'Thank You!',
+              template: 'Matches have been successfully uploaded!'
+            });
             done = false;
           }
-
-          $scope.showUploader = true;
-
-          var confirmPopup = $ionicPopup.alert({
-            title: 'Thank You!',
-            template: 'Matches have been successfully uploaded!'
-          });
-
 
           console.log('Success!');
 
@@ -195,6 +193,7 @@ angular.module('starter.controllers', [])
             title: 'No Matches',
             template: 'No new matches to upload!'
           });
+          $scope.showUploader = true;
         }
 
 
@@ -226,12 +225,6 @@ angular.module('starter.controllers', [])
 
 .controller('NewMatchCtrl', ['$scope', '$state', '$rootScope', '$ionicPopup', function($scope, $state, $rootScope, $ionicPopup) {
 
-  // Defining Match Variables
-  // $rootScope.match = {defenseOne: "Low Bar", defenseTwo: "", defenseThree: "", defenseFour: "", defenseFive: "",
-  //                     scouter: "", quadrant: "", team: null, number: null,
-  //                     autoNotes: "", teleopNotes: "", defensiveBot: false, offensiveBot: false};
-
-  // Test Match Variables
 
   if (!$rootScope.match)
   {
@@ -279,7 +272,6 @@ angular.module('starter.controllers', [])
 // Control Code for Auto (4th) Webpage
 
 .controller('AutoCtrl', ['$scope', '$state', '$rootScope', '$ionicPopup', '$timeout', function($scope, $state, $rootScope, $ionicPopup, $timeout) {
-
 
   if (!$rootScope.auto)
   {
@@ -699,7 +691,7 @@ angular.module('starter.controllers', [])
 
                      $rootScope.uploaded = "Previous match was uploaded. Thank you!";
                      $rootScope.match.number = $rootScope.match.number + 1; // Increases the current match number by 1
-                     $rootScope.match.team = null;
+                     $rootScope.match.team = "";
                      $rootScope.match.autoNotes = "";
                      $rootScope.match.teleopNotes = "";
                      $rootScope.auto.lowBall = 0;

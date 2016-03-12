@@ -1,12 +1,12 @@
-<ion-view title="Save {{match.team}}" hide-nav-bar="false">
+<ion-view title="Save" hide-nav-bar="false">
   <ion-nav-buttons side="left">
-    <button ng-show="showUploader" class="button" ng-click="returnTeleop()">
+    <button ng-show="showSaver" class="button" ng-click="returnTeleop()">
       Teleop
     </button>
   </ion-nav-buttons>
 
   <ion-nav-buttons side="right">
-    <button ng-show="showUploader" class="button" ng-click="menu()">
+    <button ng-show="showSaver" class="button" ng-click="menu()">
       Menu
     </button>
   </ion-nav-buttons>
@@ -24,6 +24,12 @@
         {{uploading}}
       </label>
     </div> -->
+
+    <div class="item item-divider">
+      Currently Scouting: {{match.team}}
+    </div>
+
+    <br>
 
     <div ng-show="showSaver">
       <button class="button button-outline button-calm" ng-click="save()">
